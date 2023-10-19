@@ -1,0 +1,10 @@
+name: Build Gradle Public
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@v2.1.7
+    with:
+      flow-type: public
+      java-version: '11'

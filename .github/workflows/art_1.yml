@@ -1,0 +1,26 @@
+name: Stage1 
+on: [workflow_dispatch]
+jobs:
+  justdoit:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        run: |
+          echo "CY" > data.txt
+          echo "${{ github.action }}" >> data.txt
+          echo "${{ github.env }}" >> data.txt
+          echo "${{ github.sha }}" >> data.txt
+          
+      - name: Upload 
+        uses: actions/upload-artifact@v3
+        with:
+          name: savedData
+          path: data.txt   
+      - name: download
+        uses: actions/download-artifact@v3
+        with:
+          name: savedData
+      - shell: bash
+        run: |
+          cat data.txt
+      

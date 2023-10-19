@@ -1,0 +1,11 @@
+name: Build Gradle Hybrid Docker
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@v2.1.7
+    with:
+      flow-type: hybrid
+      java-version: '11'
+      docker-image: octopus-test

@@ -1,0 +1,19 @@
+name: Stage2
+
+on:
+  workflow_run:
+    workflows: ["Stage1"]
+    types:
+      - completed
+
+jobs:
+  justcheckit:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: download
+        uses: actions/download-artifact@v3
+        with:
+          name: savedData
+      - shell: bash
+        run: |
+          cat data.txt
