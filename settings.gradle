@@ -1,0 +1,8 @@
+pluginManagement {
+
+    plugins {
+        id("io.github.gradle-nexus.publish-plugin") version("1.0.0") apply(false)
+    }
+}
+
+rootProject.name="octopus-test"

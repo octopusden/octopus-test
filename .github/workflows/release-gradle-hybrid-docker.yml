@@ -1,0 +1,17 @@
+name: Release Gradle Hybrid Docker
+
+on:
+  repository_dispatch:
+    types: release-docker
+
+jobs:
+  release:
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.1.7
+    with:
+      flow-type: hybrid
+      java-version: '11'
+      commit-hash: ${{ github.event.client_payload.commit }}
+      build-version: ${{ github.event.client_payload.project_version }}
+      docker-image: octopus-test
+      register-release-immediately: true
+    secrets: inherit

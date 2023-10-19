@@ -1,0 +1,10 @@
+name: Test check artifact and register release
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    uses: octopusden/octopus-base/.github/workflows/common-check-and-register-release.yml@v2.1.7
+    with:
+      artifact-pattern: "octopus-test/_VER_/octopus-test-_VER_.jar"
+    secrets: inherit

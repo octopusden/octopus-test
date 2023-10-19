@@ -1,0 +1,19 @@
+name: Test release registration
+
+on:
+  workflow_dispatch:
+    inputs:
+      octopus-repository:
+        type: string
+        required: true
+      release-version:
+        type: string
+        required: true
+
+jobs:
+  build:
+    uses: octopusden/octopus-base/.github/workflows/common-register-release.yml@v2.1.7
+    with:
+      octopus-repository: ${{ inputs.octopus-repository }}
+      release-version:  ${{ inputs.release-version }}
+    secrets: inherit
