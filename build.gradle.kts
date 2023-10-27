@@ -11,7 +11,7 @@ plugins {
     `jacoco`
     id("io.github.gradle-nexus.publish-plugin")
     id("org.springframework.boot") version "2.7.0"
-    id("com.bmuschko.docker-spring-boot-application") version "9.3.4"
+    id("com.bmuschko.docker-spring-boot-application") version "9.3.5"
     id("io.spring.dependency-management") version "1.1.3"
 }
 
