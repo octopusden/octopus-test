@@ -1,3 +1,4 @@
+error in pom.xml #1
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -6,6 +7,7 @@
         <artifactId>octopus-parent</artifactId>
         <version>2.0.6</version>
     </parent>
+    error in pom.xml #2
     <artifactId>octopus-test</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -16,5 +18,5 @@
         <developerConnection>scm:git:${project.scm.url}</developerConnection>
         <url>https://github.com/octopusden/octopus-test.git</url>
     </scm>
+error in pom.xml #3
 </project>
-error in pom.xml
