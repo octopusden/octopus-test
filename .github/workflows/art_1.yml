@@ -12,7 +12,7 @@ jobs:
           echo "${{ github.sha }}" >> data.txt
           
       - name: Upload 
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: savedData
           path: data.txt   
