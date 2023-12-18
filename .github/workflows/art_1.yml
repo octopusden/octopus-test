@@ -17,7 +17,7 @@ jobs:
           name: savedData
           path: data.txt   
       - name: download
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: savedData
       - shell: bash
