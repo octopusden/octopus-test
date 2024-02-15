@@ -4,7 +4,8 @@ on: workflow_dispatch
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@maven-hybrid-flow
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.1.8
     with:
+      flow-type: public
       java-version: '11'
     secrets: inherit
