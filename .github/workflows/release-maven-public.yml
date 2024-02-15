@@ -6,5 +6,6 @@ jobs:
   release:
     uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@maven-hybrid-flow
     with:
+      flow-type: hybrid
       java-version: '11'
     secrets: inherit
