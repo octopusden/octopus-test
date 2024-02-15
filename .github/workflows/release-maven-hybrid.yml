@@ -1,0 +1,16 @@
+name: Release Maven Hybrid
+
+on:
+  repository_dispatch:
+    types: release-maven
+
+jobs:
+  release:
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@maven-hybrid-flow
+    with:
+      flow-type: hybrid
+      java-version: '8'
+      commit-hash: ${{ github.event.client_payload.commit }}
+      build-version: ${{ github.event.client_payload.project_version }}
+      register-release-immediately: true
+    secrets: inherit
