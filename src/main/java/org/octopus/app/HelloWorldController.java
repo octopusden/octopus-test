@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloWorldController {
     @GetMapping
     public String helloWorld() {
-        return "Hello world";
+        String mesage = "Hello" + "wordl" + "!";
+        StringBuilder sb = new StringBuilder();
+        sb.append(mesage);
+        sb.append("\nThis is idiotic message");
+        return sb.toString();
     }
 
     @PostMapping
