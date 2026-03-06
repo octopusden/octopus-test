@@ -1,7 +1,9 @@
 name: Verify Octopus Base PR99 Release Reusable
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - test/verify-octopus-base-pr99-skip-extra
 
 jobs:
   verify:
