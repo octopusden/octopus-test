@@ -1,0 +1,16 @@
+name: Verify Octopus Base PR99 Release Reusable
+
+on:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@fix/release-skip-extra-tasks-contract
+    with:
+      flow-type: hybrid
+      java-version: '11'
+      commit-hash: ${{ github.sha }}
+      build-version: 9.9.9-pr99
+      docker-image: octopus-test
+      register-release-immediately: false
+    secrets: inherit
