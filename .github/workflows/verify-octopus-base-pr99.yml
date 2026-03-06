@@ -14,5 +14,6 @@ jobs:
       commit-hash: ${{ github.sha }}
       build-version: 9.9.9-pr99
       docker-image: octopus-test
+      skip-extra-tasks: "integrationTest; echo SHOULD_NOT_RUN"
       register-release-immediately: false
     secrets: inherit
