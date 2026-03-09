@@ -89,7 +89,7 @@ val authServerRealm = System.getenv().getOrDefault("AUTH_SERVER_REALM", project.
 
 docker {
     springBootApplication {
-        baseImage.set("$dockerRegistry/openjdk:11")
+        baseImage.set("$dockerRegistry/eclipse-temurin:11")
         ports.set(listOf(8080, 8080))
         images.set(setOf("$octopusGithubDockerRegistry/octopusden/${project.name}:${project.version}"))
     }
