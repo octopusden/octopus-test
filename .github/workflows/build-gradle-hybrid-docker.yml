@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@v2.1.12
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@77563d7955837e048b2e1e74a1713e68d91d82b1
     with:
       flow-type: hybrid
       java-version: '11'
