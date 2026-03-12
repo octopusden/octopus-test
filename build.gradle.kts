@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
     dependencies {
         classpath("com.bmuschko:gradle-docker-plugin:6.7.0")
@@ -10,7 +12,8 @@ plugins {
     `signing`
     `jacoco`
     id("io.github.gradle-nexus.publish-plugin")
-    id("org.springframework.boot") version "2.7.0"
+    id("org.jetbrains.kotlin.jvm") version "1.9.25"
+    id("org.springframework.boot") version "3.2.12"
     id("io.spring.dependency-management") version "1.1.6"
     id("com.bmuschko.docker-spring-boot-application") version "9.4.0"
 }
@@ -18,8 +21,8 @@ plugins {
 group = "org.octopusden"
 
 java {
-    targetCompatibility = JavaVersion.VERSION_11
-    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_21
     withJavadocJar()
     withSourcesJar()
 }
@@ -89,7 +92,7 @@ val authServerRealm = System.getenv().getOrDefault("AUTH_SERVER_REALM", project.
 
 docker {
     springBootApplication {
-        baseImage.set("$dockerRegistry/eclipse-temurin:11")
+        baseImage.set("$dockerRegistry/eclipse-temurin:21")
         ports.set(listOf(8080, 8080))
         images.set(setOf("$octopusGithubDockerRegistry/octopusden/${project.name}:${project.version}"))
     }
@@ -97,7 +100,9 @@ docker {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation(kotlin("stdlib"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation(kotlin("test-junit5"))
 }
 
 tasks {
@@ -114,4 +119,42 @@ tasks {
         }
         dependsOn(test) // tests are required to run before generating the report
     }
+    jacocoTestCoverageVerification {
+        dependsOn(test)
+        violationRules {
+            rule {
+                element = "BUNDLE"
+                limit {
+                    counter = "LINE"
+                    value = "COVEREDRATIO"
+                    minimum = "0.75".toBigDecimal()
+                }
+            }
+        }
+        classDirectories.setFrom(
+            files(
+                classDirectories.files.map {
+                    fileTree(it) {
+                        exclude("org/octopus/app/OctopusApplication*")
+                    }
+                }
+            )
+        )
+    }
+
+    register("qualityStatic") {
+        group = "verification"
+        description = "Runs compile-time quality checks for CI quality gate"
+        dependsOn("classes", "testClasses")
+    }
+
+    register("qualityCoverage") {
+        group = "verification"
+        description = "Runs unit tests and coverage report generation for CI quality gate"
+        dependsOn("test", "jacocoTestReport", "jacocoTestCoverageVerification")
+    }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions.jvmTarget = "21"
 }
