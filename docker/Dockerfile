@@ -1,4 +1,4 @@
-FROM eclipse-temurin:11-centos7
+FROM eclipse-temurin:21-jre
 ARG JAR_DIR=build/libs/
 ARG JAR_FILE=octopus-test-*.jar
 WORKDIR app
