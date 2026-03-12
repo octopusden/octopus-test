@@ -114,4 +114,16 @@ tasks {
         }
         dependsOn(test) // tests are required to run before generating the report
     }
+
+    register("qualityStatic") {
+        group = "verification"
+        description = "Runs compile-time quality checks for CI quality gate"
+        dependsOn("classes", "testClasses")
+    }
+
+    register("qualityCoverage") {
+        group = "verification"
+        description = "Runs unit tests and coverage report generation for CI quality gate"
+        dependsOn("test", "jacocoTestReport")
+    }
 }
