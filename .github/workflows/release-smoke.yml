@@ -11,7 +11,7 @@ jobs:
   # Execute reusable release flows without publish side effects.
   release-gradle-public:
     name: release/gradle-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@feature/common-quality-gates
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@ff80643474de6513cd1c1d538c41438c3d5cf177
     with:
       flow-type: public
       java-version: "21"
@@ -20,7 +20,7 @@ jobs:
 
   release-gradle-hybrid:
     name: release/gradle-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@feature/common-quality-gates
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@ff80643474de6513cd1c1d538c41438c3d5cf177
     with:
       flow-type: hybrid
       java-version: "21"
@@ -31,7 +31,7 @@ jobs:
 
   release-gradle-hybrid-docker:
     name: release/gradle-hybrid-docker
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@feature/common-quality-gates
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@ff80643474de6513cd1c1d538c41438c3d5cf177
     with:
       flow-type: hybrid
       java-version: "21"
@@ -43,7 +43,7 @@ jobs:
 
   release-maven-public:
     name: release/maven-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@feature/common-quality-gates
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@ff80643474de6513cd1c1d538c41438c3d5cf177
     with:
       flow-type: public
       java-version: "21"
@@ -52,7 +52,7 @@ jobs:
 
   release-maven-hybrid:
     name: release/maven-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@feature/common-quality-gates
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@ff80643474de6513cd1c1d538c41438c3d5cf177
     with:
       flow-type: hybrid
       java-version: "21"

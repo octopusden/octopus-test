@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@feature/common-quality-gates
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@ff80643474de6513cd1c1d538c41438c3d5cf177
     with:
       flow-type: public
       java-version: '21'
