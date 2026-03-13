@@ -1,0 +1,141 @@
+name: Merge Gate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  gate-merge:
+    name: gate/merge
+    runs-on: ubuntu-latest
+    env:
+      REQUIRED_WORKFLOWS_JSON: '["Quality Gates","Build Gradle Public","Build Gradle Hybrid","Build Gradle Hybrid Docker","Build Maven Public"]'
+      OPTIONAL_WORKFLOWS_JSON: '["Security Reports"]'
+    steps:
+      - name: Resolve merge gate context
+        id: context
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            target_branch="${{ github.event.pull_request.head.ref }}"
+            target_sha="${{ github.event.pull_request.head.sha }}"
+          else
+            target_branch="${GITHUB_REF_NAME}"
+            target_sha="${GITHUB_SHA}"
+          fi
+
+          {
+            echo "target_branch=${target_branch}"
+            echo "target_sha=${target_sha}"
+          } >> "$GITHUB_OUTPUT"
+
+          {
+            echo "### Merge gate context"
+            echo "- branch: \`${target_branch}\`"
+            echo "- sha: \`${target_sha}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Wait for required workflows
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_BRANCH: ${{ steps.context.outputs.target_branch }}
+          TARGET_SHA: ${{ steps.context.outputs.target_sha }}
+        run: |
+          set -euo pipefail
+
+          deadline=$((SECONDS + 30 * 60))
+          expected_count=$(jq 'length' <<<"${REQUIRED_WORKFLOWS_JSON}")
+          optional_stabilized=false
+
+          while (( SECONDS < deadline )); do
+            runs_json="$(gh run list \
+              --repo "${GITHUB_REPOSITORY}" \
+              --branch "${TARGET_BRANCH}" \
+              --limit 100 \
+              --json workflowName,status,conclusion,headSha,url,createdAt)"
+
+            required_runs="$(jq \
+              --arg sha "${TARGET_SHA}" \
+              --argjson required "${REQUIRED_WORKFLOWS_JSON}" \
+              '[.[] | select(.headSha == $sha and (.workflowName as $workflow | $required | index($workflow)))]
+               | sort_by(.workflowName, .createdAt)
+               | group_by(.workflowName)
+               | map(last)' \
+              <<<"${runs_json}")"
+
+            optional_runs="$(jq \
+              --arg sha "${TARGET_SHA}" \
+              --argjson optional "${OPTIONAL_WORKFLOWS_JSON}" \
+              '[.[] | select(.headSha == $sha and (.workflowName as $workflow | $optional | index($workflow)))]
+               | sort_by(.workflowName, .createdAt)
+               | group_by(.workflowName)
+               | map(last)' \
+              <<<"${runs_json}")"
+
+            found_count=$(jq 'length' <<<"${required_runs}")
+            if (( found_count < expected_count )); then
+              missing_workflows="$(jq \
+                --argjson required "${REQUIRED_WORKFLOWS_JSON}" \
+                --argjson runs "${required_runs}" \
+                -r '[ $required[] as $workflow | select(($runs | map(.workflowName) | index($workflow)) | not) ] | join(", ")' \
+                <<<"${required_runs}")"
+              echo "Waiting for workflow runs to appear (found ${found_count}/${expected_count}). Missing: ${missing_workflows}"
+              sleep 15
+              continue
+            fi
+
+            required_pending_count=$(jq '[.[] | select(.status != "completed")] | length' <<<"${required_runs}")
+            if (( required_pending_count > 0 )); then
+              pending_required="$(jq -r '[.[] | select(.status != "completed") | .workflowName] | join(", ")' <<<"${required_runs}")"
+              echo "Waiting for required workflows to complete (pending ${required_pending_count}): ${pending_required}"
+              sleep 15
+              continue
+            fi
+
+            if [[ "${optional_stabilized}" != "true" ]]; then
+              optional_stabilized=true
+              echo "Required workflows completed. Waiting one extra poll cycle for optional workflows."
+              sleep 15
+              continue
+            fi
+
+            matching_runs="$(jq -n \
+              --argjson required "${required_runs}" \
+              --argjson optional "${optional_runs}" \
+              '$required + $optional')"
+
+            pending_count=$(jq '[.[] | select(.status != "completed")] | length' <<<"${matching_runs}")
+            if (( pending_count > 0 )); then
+              pending_workflows="$(jq -r '[.[] | select(.status != "completed") | .workflowName] | join(", ")' <<<"${matching_runs}")"
+              echo "Waiting for workflows to complete (pending ${pending_count}): ${pending_workflows}"
+              sleep 15
+              continue
+            fi
+
+            {
+              echo ""
+              echo "### Workflow results"
+              jq -r '.[] | "- \(.workflowName): \(.conclusion) ([run](\(.url)))"' <<<"${matching_runs}"
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            failed_runs="$(jq '[.[] | select(.conclusion != "success")]' <<<"${matching_runs}")"
+            if [[ "$(jq 'length' <<<"${failed_runs}")" != "0" ]]; then
+              echo "Merge gate failed:"
+              jq -r '.[] | "- \(.workflowName): \(.conclusion) (\(.url))"' <<<"${failed_runs}"
+              exit 1
+            fi
+
+            echo "Merge gate passed."
+            exit 0
+          done
+
+          echo "Timed out waiting for workflows on branch '${TARGET_BRANCH}'."
+          exit 1
