@@ -7,6 +7,18 @@ Tests for Octopus project
 - `Quality Gates` is reusable and manual, intended to validate style, static checks, tests, and coverage.
 - `Security Reports` is reusable, scheduled, and manual, intended to publish security scan results and code scanning alerts.
 
+## Developer View
+
+In a regular pull request, developers should expect to see:
+
+- `Quality Gates`
+- `Security Reports`
+- `Merge Gate`
+
+`Merge Gate / gate/merge` is the external merge contract for the repository.
+If it is green, all required gates passed.
+If it is red, open the failed upstream check and inspect its summary, logs, or artifacts.
+
 ## DOCKER
 
 # Start docker from a terminal
