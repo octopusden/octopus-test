@@ -8,6 +8,7 @@ permissions:
   contents: read
 
 jobs:
+  # Execute reusable release flows without publish side effects.
   release-gradle-public:
     name: release/gradle-public
     uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@feature/common-quality-gates
