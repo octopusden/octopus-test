@@ -1,0 +1,80 @@
+name: Merge Gate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  quality:
+    uses: ./.github/workflows/quality-gates.yml
+
+  security:
+    uses: ./.github/workflows/security-reports.yml
+
+  build-gradle-public:
+    name: build/gradle-public
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@feature/common-quality-gates
+    with:
+      flow-type: public
+      java-version: "21"
+
+  build-gradle-hybrid:
+    name: build/gradle-hybrid
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@feature/common-quality-gates
+    with:
+      flow-type: hybrid
+      java-version: "21"
+
+  build-gradle-hybrid-docker:
+    name: build/gradle-hybrid-docker
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@feature/common-quality-gates
+    with:
+      flow-type: hybrid
+      java-version: "21"
+      docker-image: octopus-test
+
+  build-maven-public:
+    name: build/maven-public
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-build.yml@feature/common-quality-gates
+    with:
+      java-version: "21"
+
+  gate-merge:
+    name: gate/merge
+    if: ${{ always() }}
+    needs:
+      - quality
+      - security
+      - build-gradle-public
+      - build-gradle-hybrid
+      - build-gradle-hybrid-docker
+      - build-maven-public
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate gate results
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          results='${{ toJson(needs) }}'
+          failed="$(jq -r 'to_entries[] | select(.value.result != "success") | "\(.key): \(.value.result)"' <<<"${results}")"
+
+          {
+            echo "### Merge gate results"
+            jq -r 'to_entries[] | "- \(.key): \(.value.result)"' <<<"${results}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ -n "${failed}" ]]; then
+            echo "Merge gate failed:"
+            echo "${failed}"
+            exit 1
+          fi
+
+          echo "Merge gate passed."
