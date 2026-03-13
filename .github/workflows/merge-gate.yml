@@ -47,6 +47,10 @@ jobs:
     with:
       java-version: "21"
 
+  release-smoke:
+    name: release-smoke
+    uses: ./.github/workflows/release-smoke.yml
+
   gate-merge:
     name: gate/merge
     if: ${{ always() }}
@@ -57,6 +61,7 @@ jobs:
       - build-gradle-hybrid
       - build-gradle-hybrid-docker
       - build-maven-public
+      - release-smoke
     runs-on: ubuntu-latest
     steps:
       - name: Validate gate results

@@ -1,0 +1,61 @@
+name: Release Smoke Tests
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-gradle-public:
+    name: release/gradle-public
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@feature/common-quality-gates
+    with:
+      flow-type: public
+      java-version: "21"
+      dry-run: true
+    secrets: inherit
+
+  release-gradle-hybrid:
+    name: release/gradle-hybrid
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@feature/common-quality-gates
+    with:
+      flow-type: hybrid
+      java-version: "21"
+      commit-hash: ${{ github.sha }}
+      build-version: 0.0.0-smoke-${{ github.run_number }}
+      dry-run: true
+    secrets: inherit
+
+  release-gradle-hybrid-docker:
+    name: release/gradle-hybrid-docker
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@feature/common-quality-gates
+    with:
+      flow-type: hybrid
+      java-version: "21"
+      commit-hash: ${{ github.sha }}
+      build-version: 0.0.0-smoke-${{ github.run_number }}
+      docker-image: octopus-test
+      dry-run: true
+    secrets: inherit
+
+  release-maven-public:
+    name: release/maven-public
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@feature/common-quality-gates
+    with:
+      flow-type: public
+      java-version: "21"
+      dry-run: true
+    secrets: inherit
+
+  release-maven-hybrid:
+    name: release/maven-hybrid
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@feature/common-quality-gates
+    with:
+      flow-type: hybrid
+      java-version: "21"
+      commit-hash: ${{ github.sha }}
+      build-version: 0.0.0-smoke-${{ github.run_number }}
+      dry-run: true
+    secrets: inherit
