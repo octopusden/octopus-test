@@ -20,21 +20,21 @@ jobs:
 
   build-gradle-public:
     name: build/gradle-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@3f707f5c15311c47176d5dbf3a6501296e54b556
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@feature/common-quality-gates
     with:
       flow-type: public
       java-version: "21"
 
   build-gradle-hybrid:
     name: build/gradle-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@3f707f5c15311c47176d5dbf3a6501296e54b556
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@feature/common-quality-gates
     with:
       flow-type: hybrid
       java-version: "21"
 
   build-gradle-hybrid-docker:
     name: build/gradle-hybrid-docker
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@3f707f5c15311c47176d5dbf3a6501296e54b556
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@feature/common-quality-gates
     with:
       flow-type: hybrid
       java-version: "21"
@@ -42,7 +42,7 @@ jobs:
 
   build-maven-public:
     name: build/maven-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-build.yml@v2.1.12
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-build.yml@feature/common-quality-gates
     with:
       java-version: "21"
 
