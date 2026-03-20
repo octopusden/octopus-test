@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@feature/common-quality-gates
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@f6051f66c7872d2d33f5df41fb96b4deed107930
     with:
       flow-type: public
       java-version: '21'

@@ -8,7 +8,7 @@ on:
 
 jobs:
   security:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-security-reports.yml@feature/common-quality-gates
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-security-reports.yml@f6051f66c7872d2d33f5df41fb96b4deed107930
     with:
       java-version: '21'
       enable-dependency-check: false
