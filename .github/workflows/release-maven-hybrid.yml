@@ -6,7 +6,7 @@ on:
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@feature/common-quality-gates
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.2.0
     with:
       flow-type: hybrid
       java-version: '8'

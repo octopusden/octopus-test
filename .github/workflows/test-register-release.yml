@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    uses: octopusden/octopus-base/.github/workflows/common-register-release.yml@feature/common-quality-gates
+    uses: octopusden/octopus-base/.github/workflows/common-register-release.yml@v2.2.0
     with:
       octopus-repository: ${{ inputs.octopus-repository }}
       release-version:  ${{ inputs.release-version }}
