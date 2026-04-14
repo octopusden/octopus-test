@@ -6,7 +6,7 @@ on:
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.2.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@0ff816057055fc3dc6bb0116c0142df18dfe5d5a
     with:
       flow-type: hybrid
       java-version: '21'
