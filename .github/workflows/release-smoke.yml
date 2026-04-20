@@ -11,7 +11,7 @@ jobs:
   # Execute reusable release flows without publish side effects.
   release-gradle-public:
     name: release/gradle-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.2.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@2eed61585abf144d138ca3cfee1d670b094aba0a
     with:
       flow-type: public
       java-version: "21"
@@ -20,7 +20,7 @@ jobs:
 
   release-gradle-hybrid:
     name: release/gradle-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.2.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@2eed61585abf144d138ca3cfee1d670b094aba0a
     with:
       flow-type: hybrid
       java-version: "21"
@@ -31,7 +31,7 @@ jobs:
 
   release-gradle-hybrid-docker:
     name: release/gradle-hybrid-docker
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.2.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@2eed61585abf144d138ca3cfee1d670b094aba0a
     with:
       flow-type: hybrid
       java-version: "21"
@@ -43,7 +43,7 @@ jobs:
 
   release-maven-public:
     name: release/maven-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.2.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@2eed61585abf144d138ca3cfee1d670b094aba0a
     with:
       flow-type: public
       java-version: "21"
@@ -52,7 +52,7 @@ jobs:
 
   release-maven-hybrid:
     name: release/maven-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.2.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@2eed61585abf144d138ca3cfee1d670b094aba0a
     with:
       flow-type: hybrid
       java-version: "21"
