@@ -21,21 +21,21 @@ jobs:
 
   build-gradle-public:
     name: build/gradle-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@v2.2.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@09ed978b979f1362cbbb3d9287aa06ddaa130bfc
     with:
       flow-type: public
       java-version: "21"
 
   build-gradle-hybrid:
     name: build/gradle-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@v2.2.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@09ed978b979f1362cbbb3d9287aa06ddaa130bfc
     with:
       flow-type: hybrid
       java-version: "21"
 
   build-gradle-hybrid-docker:
     name: build/gradle-hybrid-docker
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@v2.2.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@09ed978b979f1362cbbb3d9287aa06ddaa130bfc
     with:
       flow-type: hybrid
       java-version: "21"
@@ -43,7 +43,7 @@ jobs:
 
   build-maven-public:
     name: build/maven-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-build.yml@v2.2.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-build.yml@09ed978b979f1362cbbb3d9287aa06ddaa130bfc
     with:
       java-version: "21"
 

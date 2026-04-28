@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   build:
-    uses: octopusden/octopus-base/.github/workflows/common-check-and-register-release.yml@v2.2.0
+    uses: octopusden/octopus-base/.github/workflows/common-check-and-register-release.yml@09ed978b979f1362cbbb3d9287aa06ddaa130bfc
     with:
       artifact-pattern: "octopus-test/_VER_/octopus-test-_VER_.jar"
     secrets: inherit
