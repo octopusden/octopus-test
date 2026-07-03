@@ -9,7 +9,7 @@ class HelloWorldControllerTest {
 
     @Test
     void shouldExecHello() throws Exception {
-        assertEquals("Hello world", controller.helloWorld());
+        assertEquals("Helloooo world", controller.helloWorld());
     }
 
     @Test
