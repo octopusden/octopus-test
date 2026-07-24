@@ -11,7 +11,7 @@ on:
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@fix/staging-profile-id
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@ci/publish-failure-triage
     with:
       flow-type: public
       java-version: '21'
