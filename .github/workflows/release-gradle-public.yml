@@ -1,11 +1,19 @@
 name: Release Gradle Public
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      resume-deployment-id:
+        description: 'Portal deployment id to resume (skips the Gradle upload and finishes that deployment)'
+        required: false
+        type: string
+        default: ''
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.4.1
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@feat/portal-publish
     with:
       flow-type: public
       java-version: '21'
+      resume-deployment-id: ${{ inputs.resume-deployment-id }}
     secrets: inherit
