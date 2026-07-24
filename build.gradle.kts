@@ -18,7 +18,9 @@ plugins {
     id("com.bmuschko.docker-spring-boot-application") version "9.4.0"
 }
 
-group = "org.octopusden"
+// TEST-ONLY: fresh, never-published subgroup to reproduce the OSSRH-compat
+// staging-profile auto-lookup failure (do not merge to main).
+group = "org.octopusden.octopus.canary-profileid"
 
 java {
     targetCompatibility = JavaVersion.VERSION_21
@@ -34,6 +36,12 @@ nexusPublishing {
             snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
             username.set(System.getenv("MAVEN_USERNAME"))
             password.set(System.getenv("MAVEN_PASSWORD"))
+            // Explicit profile id (bypasses the OSSRH-compat auto-lookup). Set only
+            // when -PstagingProfileId is passed and non-blank; otherwise fall back to
+            // auto-lookup (so we can reproduce the failure by passing it empty).
+            (findProperty("stagingProfileId") as String?)
+                ?.takeIf { it.isNotBlank() }
+                ?.let { stagingProfileId.set(it) }
         }
     }
 }

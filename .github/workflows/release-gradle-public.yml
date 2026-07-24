@@ -1,11 +1,19 @@
 name: Release Gradle Public
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      staging-profile-id:
+        description: 'Sonatype staging profile id. Default org.octopusden = fix path; set empty to reproduce the auto-lookup failure.'
+        required: false
+        type: string
+        default: 'org.octopusden'
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.4.1
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@fix/staging-profile-id
     with:
       flow-type: public
       java-version: '21'
+      staging-profile-id: ${{ inputs.staging-profile-id }}
     secrets: inherit
