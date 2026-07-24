@@ -6,6 +6,6 @@ on:
 
 jobs:
   quality:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-quality-gates.yml@v2.4.1
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-quality-gates.yml@0a59c1ac4a10209e3b60d1beb8a18aa9830c6674
     with:
       java-version: '21'
