@@ -36,12 +36,9 @@ nexusPublishing {
             snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
             username.set(System.getenv("MAVEN_USERNAME"))
             password.set(System.getenv("MAVEN_PASSWORD"))
-            // Explicit profile id (bypasses the OSSRH-compat auto-lookup). Set only
-            // when -PstagingProfileId is passed and non-blank; otherwise fall back to
-            // auto-lookup (so we can reproduce the failure by passing it empty).
-            (findProperty("stagingProfileId") as String?)
-                ?.takeIf { it.isNotBlank() }
-                ?.let { stagingProfileId.set(it) }
+            // NOTE: no stagingProfileId wiring here on purpose — the octopus-base
+            // release workflow injects it via --init-script. This proves the
+            // centralized fix needs no consumer build-script change.
         }
     }
 }
