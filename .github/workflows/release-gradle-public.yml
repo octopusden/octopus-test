@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.1
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@dc620b797ed7473e17b7f5b87db6c7d3254af134
     with:
       flow-type: public
       java-version: '21'
