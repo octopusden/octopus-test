@@ -9,6 +9,12 @@ permissions:
 
 jobs:
   # Execute reusable release flows without publish side effects.
+  #
+  # Every job below passes `secrets: inherit`, deliberately: this suite is the consumer canary
+  # for common-java-gradle-release, so it must invoke that workflow the same way real callers do
+  # — all of them use `secrets: inherit`. Narrowing to an explicit secret map here would make the
+  # canary diverge from the contract it exists to verify, and could hide a missing-secret failure
+  # that a real release would hit. `dry-run: true` is what keeps these runs side-effect-free.
   release-gradle-public:
     name: release/gradle-public
     uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
@@ -38,6 +44,25 @@ jobs:
       commit-hash: ${{ github.sha }}
       build-version: 0.0.0-smoke-${{ github.run_number }}
       docker-image: octopus-test
+      dry-run: true
+    secrets: inherit
+
+  # Consumer canary for the publish-to-nexus=false contract, i.e. deployable-only repos that
+  # ship a docker image and are never consumed as a Maven dependency. Mirrors the
+  # hybrid-docker case but opts out of Sonatype publishing. Under dry-run the publish steps
+  # are skipped regardless of publish-to-nexus, so this verifies the caller contract — the
+  # input is accepted and the build/docker/register path stays green — not the live gating.
+  release-gradle-hybrid-docker-no-nexus:
+    name: release/gradle-hybrid-docker-no-nexus
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
+    with:
+      flow-type: hybrid
+      java-version: "21"
+      commit-hash: ${{ github.sha }}
+      build-version: 0.0.0-smoke-${{ github.run_number }}
+      docker-image: octopus-test
+      publish-to-nexus: false
+      register-release-immediately: true
       dry-run: true
     secrets: inherit
 
