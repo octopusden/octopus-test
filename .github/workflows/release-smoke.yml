@@ -9,6 +9,12 @@ permissions:
 
 jobs:
   # Execute reusable release flows without publish side effects.
+  #
+  # Every job below passes `secrets: inherit`, deliberately: this suite is the consumer canary
+  # for common-java-gradle-release, so it must invoke that workflow the same way real callers do
+  # — all of them use `secrets: inherit`. Narrowing to an explicit secret map here would make the
+  # canary diverge from the contract it exists to verify, and could hide a missing-secret failure
+  # that a real release would hit. `dry-run: true` is what keeps these runs side-effect-free.
   release-gradle-public:
     name: release/gradle-public
     uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
