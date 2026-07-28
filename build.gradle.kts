@@ -41,7 +41,14 @@ nexusPublishing {
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
-            artifact(tasks.named("bootJar"))
+            // Publish the THIN jar, not the bootJar. This repository is the release-workflow
+            // canary; nothing consumes its artifacts as a dependency, yet every test release was
+            // uploading a ~20 MB Spring Boot executable jar to Maven Central — 91 versions, ~1.45 GB
+            // in total, and ~41 MB of the org's 80 MB monthly quota in July 2026 alone.
+            // The classifier is cleared so the published coordinate keeps the classifier-less name
+            // that check-and-register.yml and test-check-artifact.yml poll. bootJar itself is
+            // untouched: the docker image build still uses it.
+            artifact(tasks.named("jar")) { classifier = "" }
             artifact(tasks["sourcesJar"])
             artifact(tasks["javadocJar"])
             pom {
