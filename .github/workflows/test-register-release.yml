@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    uses: octopusden/octopus-base/.github/workflows/common-register-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-register-release.yml@c4830a402a884072024c9ac2481ecaf7f7b3c398
     with:
       octopus-repository: ${{ inputs.octopus-repository }}
       release-version:  ${{ inputs.release-version }}
