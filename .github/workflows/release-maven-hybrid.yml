@@ -6,7 +6,7 @@ on:
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@3303c4d689bff29ef055d49f169a01259e3d2bda
     with:
       flow-type: hybrid
       java-version: '8'
