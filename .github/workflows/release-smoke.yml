@@ -17,7 +17,7 @@ jobs:
   # that a real release would hit. `dry-run: true` is what keeps these runs side-effect-free.
   release-gradle-public:
     name: release/gradle-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@3f70f8fae0caab84a50e9be3fb5c32e645bcb2fb
     with:
       flow-type: public
       java-version: "21"
@@ -26,7 +26,7 @@ jobs:
 
   release-gradle-hybrid:
     name: release/gradle-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@3f70f8fae0caab84a50e9be3fb5c32e645bcb2fb
     with:
       flow-type: hybrid
       java-version: "21"
@@ -37,7 +37,7 @@ jobs:
 
   release-gradle-hybrid-docker:
     name: release/gradle-hybrid-docker
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@3f70f8fae0caab84a50e9be3fb5c32e645bcb2fb
     with:
       flow-type: hybrid
       java-version: "21"
@@ -54,7 +54,7 @@ jobs:
   # input is accepted and the build/docker/register path stays green — not the live gating.
   release-gradle-hybrid-docker-no-nexus:
     name: release/gradle-hybrid-docker-no-nexus
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@3f70f8fae0caab84a50e9be3fb5c32e645bcb2fb
     with:
       flow-type: hybrid
       java-version: "21"
@@ -68,7 +68,7 @@ jobs:
 
   release-maven-public:
     name: release/maven-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@3f70f8fae0caab84a50e9be3fb5c32e645bcb2fb
     with:
       flow-type: public
       java-version: "21"
@@ -77,7 +77,7 @@ jobs:
 
   release-maven-hybrid:
     name: release/maven-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@3f70f8fae0caab84a50e9be3fb5c32e645bcb2fb
     with:
       flow-type: hybrid
       java-version: "21"
