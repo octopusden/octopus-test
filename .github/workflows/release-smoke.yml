@@ -15,6 +15,11 @@ jobs:
   # — all of them use `secrets: inherit`. Narrowing to an explicit secret map here would make the
   # canary diverge from the contract it exists to verify, and could hide a missing-secret failure
   # that a real release would hit. `dry-run: true` is what keeps these runs side-effect-free.
+  #
+  # The three jobs below allowlist octopus-test for the Central guard: bootJava belongs on GitHub
+  # Packages, but v2.5.2 predates github-packages-publications so they cannot route it and the
+  # guard counts it. The guard runs in dry-run too, deliberately. Replace the allowlist with
+  # `github-packages-publications: bootJava` when the refs are bumped.
   release-gradle-public:
     name: release/gradle-public
     uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
@@ -22,6 +27,7 @@ jobs:
       flow-type: public
       java-version: "21"
       dry-run: true
+      fat-jar-publication-allowlist: octopus-test
     secrets: inherit
 
   release-gradle-hybrid:
@@ -33,6 +39,7 @@ jobs:
       commit-hash: ${{ github.sha }}
       build-version: 0.0.0-smoke-${{ github.run_number }}
       dry-run: true
+      fat-jar-publication-allowlist: octopus-test
     secrets: inherit
 
   release-gradle-hybrid-docker:
@@ -45,6 +52,7 @@ jobs:
       build-version: 0.0.0-smoke-${{ github.run_number }}
       docker-image: octopus-test
       dry-run: true
+      fat-jar-publication-allowlist: octopus-test
     secrets: inherit
 
   # Consumer canary for the publish-to-nexus=false contract, i.e. deployable-only repos that

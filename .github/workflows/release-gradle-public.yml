@@ -8,4 +8,9 @@ jobs:
     with:
       flow-type: public
       java-version: '21'
+      # bootJava belongs on GitHub Packages, but this ref predates
+      # github-packages-publications so the Central guard still counts it. Replace with
+      # `github-packages-publications: bootJava` when the refs are bumped — the guard then
+      # excludes routed publications by itself.
+      fat-jar-publication-allowlist: octopus-test
     secrets: inherit
