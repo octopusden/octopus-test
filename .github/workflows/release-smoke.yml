@@ -66,6 +66,26 @@ jobs:
       dry-run: true
     secrets: inherit
 
+  # Consumer canary for the github-packages-publications contract. Under dry-run the GitHub
+  # Packages publish step is skipped, so this verifies only that the input is accepted and the
+  # build/guard path stays green — a real publish is exercised by release-gradle-github-packages.yml.
+  #
+  # This job pins the octopus-base branch rather than the tag the others use, because the input does
+  # not exist on v2.5.2. Bump it along with the rest once octopus-base is tagged.
+  release-gradle-github-packages:
+    name: release/gradle-github-packages
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
+    with:
+      flow-type: hybrid
+      java-version: "21"
+      commit-hash: ${{ github.sha }}
+      build-version: 0.0.0-smoke-${{ github.run_number }}
+      publish-to-nexus: false
+      github-packages-publications: bootJava
+      fat-jar-publication-allowlist: octopus-test
+      dry-run: true
+    secrets: inherit
+
   release-maven-public:
     name: release/maven-public
     uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.5.2
