@@ -13,4 +13,9 @@ jobs:
       commit-hash: ${{ github.event.client_payload.commit }}
       build-version: ${{ github.event.client_payload.project_version }}
       register-release-immediately: true
+      # bootJava belongs on GitHub Packages, but this ref predates
+      # github-packages-publications so the Central guard still counts it. Replace with
+      # `github-packages-publications: bootJava` when the refs are bumped — the guard then
+      # excludes routed publications by itself.
+      fat-jar-publication-allowlist: octopus-test
     secrets: inherit
