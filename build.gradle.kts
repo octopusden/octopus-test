@@ -100,9 +100,11 @@ publishing {
                 "https://maven.pkg.github.com/" +
                     (System.getenv("GITHUB_REPOSITORY") ?: "octopusden/octopus-test")
             )
+            // Supplied by the release workflow, not by ambient Actions variables: GITHUB_TOKEN is
+            // not one, and GITHUB_ACTOR is a built-in whose value varies by trigger.
             credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
+                username = System.getenv("GITHUB_PACKAGES_USERNAME")
+                password = System.getenv("GITHUB_PACKAGES_TOKEN")
             }
         }
     }
