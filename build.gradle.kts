@@ -93,10 +93,7 @@ publishing {
             // The name is the contract: the release workflow's routing keys off "GitHubPackages".
             name = "GitHubPackages"
             // From the environment so the block is copy-pasteable into any octopus repository.
-            url = uri(
-                "https://maven.pkg.github.com/" +
-                    (System.getenv("GITHUB_REPOSITORY") ?: "octopusden/octopus-test")
-            )
+            url = uri("https://maven.pkg.github.com/octopusden/octopus-test")
             // Set by the workflow. GITHUB_TOKEN is not an ambient variable, and GITHUB_ACTOR is a
             // built-in whose value varies by trigger.
             credentials {
