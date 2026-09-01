@@ -1,0 +1,31 @@
+name: Release Gradle GitHub Packages
+
+# Canary for the github-packages-publications input: a real, non-dry-run release that publishes
+# the fat jar to GitHub Packages and NOTHING to Maven Central.
+#
+# publish-to-nexus is false on purpose. Both registries refuse to re-publish an existing version,
+# so every iteration of this experiment would otherwise burn an immutable Central version and eat
+# into the org's monthly Central quota — the very quota OCTOPUS-2434 exists to protect.
+#
+# No fat-jar-publication-allowlist here: the guard is gated on publish-to-nexus, so turning Central
+# off skips it entirely. A repository that keeps publishing a thin jar to Central alongside the fat
+# jar — the octopus-release-management-service shape — does need the allowlist, because the guard
+# runs publishToMavenLocal, which materialises every publication regardless of its target
+# repository and detects the fat one. There the allowlist cannot be precise: it is keyed by
+# artifactId, and the thin and fat publications share one.
+#
+# workflow_dispatch only surfaces workflows present on the default branch, so this file must reach
+# main before it can be run. The `uses:` ref is resolved at dispatch time, which means the
+# octopus-base branch can be iterated on and re-dispatched without touching this repository again.
+
+on: workflow_dispatch
+
+jobs:
+  release:
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
+    with:
+      flow-type: public
+      java-version: '21'
+      publish-to-nexus: false
+      github-packages-publications: bootJava
+    secrets: inherit

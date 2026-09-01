@@ -38,6 +38,28 @@ nexusPublishing {
     }
 }
 
+fun MavenPublication.octopusPom() = pom {
+    name.set(project.name)
+    description.set("Octopus module for testing Maven release workflow")
+    url.set("https://github.com/octopusden/octopus-test.git")
+    licenses {
+        license {
+            name.set("The Apache License, Version 2.0")
+            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+        }
+    }
+    scm {
+        url.set("https://github.com/octopusden/octopus-test.git")
+        connection.set("scm:git://github.com/octopusden/octopus-test.git")
+    }
+    developers {
+        developer {
+            id.set("octopus")
+            name.set("octopus")
+        }
+    }
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
@@ -51,30 +73,54 @@ publishing {
             artifact(tasks.named("jar")) { classifier = "" }
             artifact(tasks["sourcesJar"])
             artifact(tasks["javadocJar"])
-            pom {
-                name.set(project.name)
-                description.set("Octopus module for testing Maven release workflow")
-                url.set("https://github.com/octopusden/octopus-test.git")
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-                scm {
-                    url.set("https://github.com/octopusden/octopus-test.git")
-                    connection.set("scm:git://github.com/octopusden/octopus-test.git")
-                }
-                developers {
-                    developer {
-                        id.set("octopus")
-                        name.set("octopus")
-                    }
-                }
+            octopusPom()
+        }
+
+        // The fat jar the thin-jar switch above evicted from Maven Central, republished to GitHub
+        // Packages so it stays resolvable by Maven coordinates without consuming Central quota.
+        // This is the canary for the same split in octopus-release-management-service, where a
+        // TeamCity metarunner fetches the automation shadow jar as `<group>:<name>:<version>:jar:all`
+        // through a Maven2 runner — the runner is what makes the download work on both Windows and
+        // Linux agents, so a plain GitHub release asset is not an option there.
+        //
+        // The classifier is set on the published coordinate only; the bootJar task itself is
+        // untouched, so the docker image build still consumes it unchanged.
+        create<MavenPublication>("bootJava") {
+            artifact(tasks.named("bootJar")) { classifier = "all" }
+            octopusPom()
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            // Derived from the environment rather than hardcoded, so this block is copy-pasteable
+            // into any octopus repository unchanged. GITHUB_REPOSITORY is set by GitHub Actions.
+            url = uri(
+                "https://maven.pkg.github.com/" +
+                    (System.getenv("GITHUB_REPOSITORY") ?: "octopusden/octopus-test")
+            )
+            // Supplied by the release workflow, not by ambient Actions variables: GITHUB_TOKEN is
+            // not one, and GITHUB_ACTOR is a built-in whose value varies by trigger.
+            credentials {
+                username = System.getenv("GITHUB_PACKAGES_USERNAME")
+                password = System.getenv("GITHUB_PACKAGES_TOKEN")
             }
         }
     }
 }
+
+// nexusPublishing binds EVERY publication to the sonatype repository, and the release workflow
+// runs the aggregate publishToSonatype — so without this the fat jar goes straight back to Maven
+// Central, which is the one thing this split exists to prevent. The mirror-image task is disabled
+// too: both publications share one group:artifact:version, so publishing both to GitHub Packages
+// would collide on the POM upload.
+tasks.matching {
+    it.name in setOf(
+        "publishBootJavaPublicationToSonatypeRepository",
+        "publishMavenJavaPublicationToGitHubPackagesRepository"
+    )
+}.configureEach { enabled = false }
 
 if (!project.version.toString().endsWith("SNAPSHOT", true)) {
     signing {
