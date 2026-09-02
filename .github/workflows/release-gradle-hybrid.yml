@@ -6,16 +6,12 @@ on:
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
     with:
       flow-type: hybrid
       java-version: '21' 
       commit-hash: ${{ github.event.client_payload.commit }}
       build-version: ${{ github.event.client_payload.project_version }}
       register-release-immediately: true
-      # bootJava belongs on GitHub Packages, but this ref predates
-      # github-packages-publications so the Central guard still counts it. Replace with
-      # `github-packages-publications: bootJava` when the refs are bumped — the guard then
-      # excludes routed publications by itself.
-      fat-jar-publication-allowlist: octopus-test
+      github-packages-publications: bootJava
     secrets: inherit

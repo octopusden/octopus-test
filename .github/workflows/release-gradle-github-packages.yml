@@ -7,12 +7,9 @@ name: Release Gradle GitHub Packages
 # so every iteration of this experiment would otherwise burn an immutable Central version and eat
 # into the org's monthly Central quota — the very quota OCTOPUS-2434 exists to protect.
 #
-# No fat-jar-publication-allowlist here: the guard is gated on publish-to-nexus, so turning Central
-# off skips it entirely. A repository that keeps publishing a thin jar to Central alongside the fat
-# jar — the octopus-release-management-service shape — does need the allowlist, because the guard
-# runs publishToMavenLocal, which materialises every publication regardless of its target
-# repository and detects the fat one. There the allowlist cannot be precise: it is keyed by
-# artifactId, and the thin and fat publications share one.
+# No fat-jar-publication-allowlist: the guard is gated on publish-to-nexus, so turning Central off
+# skips it entirely — and it would not be needed anyway, since the guard now applies the same
+# routing and stops counting a jar bound for GitHub Packages.
 #
 # workflow_dispatch only surfaces workflows present on the default branch, so this file must reach
 # main before it can be run. The `uses:` ref is resolved at dispatch time, which means the

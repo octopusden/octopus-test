@@ -16,35 +16,38 @@ jobs:
   # canary diverge from the contract it exists to verify, and could hide a missing-secret failure
   # that a real release would hit. `dry-run: true` is what keeps these runs side-effect-free.
   #
-  # The three jobs below allowlist octopus-test for the Central guard: bootJava belongs on GitHub
-  # Packages, but v2.5.2 predates github-packages-publications so they cannot route it and the
-  # guard counts it. The guard runs in dry-run too, deliberately. Replace the allowlist with
-  # `github-packages-publications: bootJava` when the refs are bumped.
+  # Every gradle-release job pins the octopus-base BRANCH under test, not a tag, so this suite
+  # reports whether that branch breaks anything. Bump them to the tag once it is released.
+  #
+  # They pass github-packages-publications: bootJava because the build declares a 20 MB fat-jar
+  # publication. Routing it is what keeps the Central guard green — the guard applies the same
+  # routing, so a jar bound for GitHub Packages is no longer counted against Central. Without it
+  # the guard fails, correctly: nothing would have said where that jar belongs.
   release-gradle-public:
     name: release/gradle-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
     with:
       flow-type: public
       java-version: "21"
       dry-run: true
-      fat-jar-publication-allowlist: octopus-test
+      github-packages-publications: bootJava
     secrets: inherit
 
   release-gradle-hybrid:
     name: release/gradle-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
     with:
       flow-type: hybrid
       java-version: "21"
       commit-hash: ${{ github.sha }}
       build-version: 0.0.0-smoke-${{ github.run_number }}
       dry-run: true
-      fat-jar-publication-allowlist: octopus-test
+      github-packages-publications: bootJava
     secrets: inherit
 
   release-gradle-hybrid-docker:
     name: release/gradle-hybrid-docker
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
     with:
       flow-type: hybrid
       java-version: "21"
@@ -52,7 +55,7 @@ jobs:
       build-version: 0.0.0-smoke-${{ github.run_number }}
       docker-image: octopus-test
       dry-run: true
-      fat-jar-publication-allowlist: octopus-test
+      github-packages-publications: bootJava
     secrets: inherit
 
   # Consumer canary for the publish-to-nexus=false contract, i.e. deployable-only repos that
@@ -62,7 +65,7 @@ jobs:
   # input is accepted and the build/docker/register path stays green — not the live gating.
   release-gradle-hybrid-docker-no-nexus:
     name: release/gradle-hybrid-docker-no-nexus
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
     with:
       flow-type: hybrid
       java-version: "21"
@@ -74,12 +77,9 @@ jobs:
       dry-run: true
     secrets: inherit
 
-  # Consumer canary for the github-packages-publications contract. Under dry-run the GitHub
-  # Packages publish step is skipped, so this verifies only that the input is accepted and the
-  # build stays green — a real publish is exercised by release-gradle-github-packages.yml.
-  #
-  # This job pins the octopus-base branch rather than the tag the others use, because the input does
-  # not exist on v2.5.2. Bump it along with the rest once octopus-base is tagged.
+  # Consumer canary for github-packages-publications with Central off entirely. Under dry-run the
+  # publish step is skipped, so this checks only that the combination is accepted — a real publish
+  # is exercised by release-gradle-github-packages.yml.
   release-gradle-github-packages:
     name: release/gradle-github-packages
     uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
