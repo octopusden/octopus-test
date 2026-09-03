@@ -16,38 +16,44 @@ jobs:
   # canary diverge from the contract it exists to verify, and could hide a missing-secret failure
   # that a real release would hit. `dry-run: true` is what keeps these runs side-effect-free.
   #
-  # Every gradle-release job pins the octopus-base BRANCH under test, not a tag, so this suite
-  # reports whether that branch breaks anything. Bump them to the tag once it is released.
+  # Every job here pins a RELEASED octopus-base tag, never an unmerged branch. This suite is
+  # reached two ways, and the second one is why: octopus-base's own consumer-verify pushes a
+  # branch here with every `octopusden/octopus-base/...@<ref>` rewritten to the commit under test,
+  # and it rewrites the ref while leaving `with:` untouched. An input that exists only on some
+  # octopus-base feature branch therefore arrives at a workflow that does not declare it, and the
+  # whole Merge Gate ends in `startup_failure` — for every octopus-base pull request except the
+  # one that owns the branch. Pinning a tag keeps the inputs here a subset of what octopus-base
+  # `main` declares, which is the only contract a PR-time canary can hold to.
   #
-  # They pass github-packages-publications: bootJava because the build declares a 20 MB fat-jar
-  # publication. Routing it is what keeps the Central guard green — the guard applies the same
-  # routing, so a jar bound for GitHub Packages is no longer counted against Central. Without it
-  # the guard fails, correctly: nothing would have said where that jar belongs.
+  # The three Central-publishing jobs allowlist octopus-test for the publication guard: the build
+  # declares a ~20 MB bootJava fat jar, and the guard counts it against Central. Routing it with
+  # `github-packages-publications: bootJava` is the better answer and returns with
+  # octopus-base#207 — the input does not exist on any octopus-base tag yet.
   release-gradle-public:
     name: release/gradle-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.8.0
     with:
       flow-type: public
       java-version: "21"
       dry-run: true
-      github-packages-publications: bootJava
+      fat-jar-publication-allowlist: octopus-test
     secrets: inherit
 
   release-gradle-hybrid:
     name: release/gradle-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.8.0
     with:
       flow-type: hybrid
       java-version: "21"
       commit-hash: ${{ github.sha }}
       build-version: 0.0.0-smoke-${{ github.run_number }}
       dry-run: true
-      github-packages-publications: bootJava
+      fat-jar-publication-allowlist: octopus-test
     secrets: inherit
 
   release-gradle-hybrid-docker:
     name: release/gradle-hybrid-docker
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.8.0
     with:
       flow-type: hybrid
       java-version: "21"
@@ -55,7 +61,7 @@ jobs:
       build-version: 0.0.0-smoke-${{ github.run_number }}
       docker-image: octopus-test
       dry-run: true
-      github-packages-publications: bootJava
+      fat-jar-publication-allowlist: octopus-test
     secrets: inherit
 
   # Consumer canary for the publish-to-nexus=false contract, i.e. deployable-only repos that
@@ -63,9 +69,10 @@ jobs:
   # hybrid-docker case but opts out of Sonatype publishing. Under dry-run the publish steps
   # are skipped regardless of publish-to-nexus, so this verifies the caller contract — the
   # input is accepted and the build/docker/register path stays green — not the live gating.
+  # No allowlist: the publication guard does not run when nothing goes to Central.
   release-gradle-hybrid-docker-no-nexus:
     name: release/gradle-hybrid-docker-no-nexus
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.8.0
     with:
       flow-type: hybrid
       java-version: "21"
@@ -77,25 +84,14 @@ jobs:
       dry-run: true
     secrets: inherit
 
-  # Consumer canary for github-packages-publications with Central off entirely. Under dry-run the
-  # publish step is skipped, so this checks only that the combination is accepted — a real publish
-  # is exercised by release-gradle-github-packages.yml.
-  release-gradle-github-packages:
-    name: release/gradle-github-packages
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
-    with:
-      flow-type: hybrid
-      java-version: "21"
-      commit-hash: ${{ github.sha }}
-      build-version: 0.0.0-smoke-${{ github.run_number }}
-      publish-to-nexus: false
-      github-packages-publications: bootJava
-      dry-run: true
-    secrets: inherit
+  # The github-packages-publications canary that stood here belongs with the input it covers:
+  # it can only pin an octopus-base branch, and a branch pin here breaks every other
+  # octopus-base pull request. octopus-base#207 restores it once the input is on a tag.
+  # The dispatch-only release-gradle-github-packages.yml still exercises a real publish.
 
   release-maven-public:
     name: release/maven-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.8.0
     with:
       flow-type: public
       java-version: "21"
@@ -104,7 +100,7 @@ jobs:
 
   release-maven-hybrid:
     name: release/maven-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v2.8.0
     with:
       flow-type: hybrid
       java-version: "21"
