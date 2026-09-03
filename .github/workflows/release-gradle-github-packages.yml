@@ -19,7 +19,7 @@ on: workflow_dispatch
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@1ebbbae54ae84d9914b557e973328916b8b5c6e5
     with:
       flow-type: public
       java-version: '21'

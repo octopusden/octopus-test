@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    uses: octopusden/octopus-base/.github/workflows/common-check-and-register-release.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-check-and-register-release.yml@1ebbbae54ae84d9914b557e973328916b8b5c6e5
     if:  "${{ github.event.workflow_run.conclusion == 'success' }}"
     with:
       artifact-pattern: "octopus-test/_VER_/octopus-test-_VER_.jar"
