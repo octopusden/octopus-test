@@ -16,44 +16,44 @@ jobs:
   # canary diverge from the contract it exists to verify, and could hide a missing-secret failure
   # that a real release would hit. `dry-run: true` is what keeps these runs side-effect-free.
   #
-  # Every job here pins a RELEASED octopus-base tag, never an unmerged branch. This suite is
-  # reached two ways, and the second one is why: octopus-base's own consumer-verify pushes a
-  # branch here with every `octopusden/octopus-base/...@<ref>` rewritten to the commit under test,
-  # and it rewrites the ref while leaving `with:` untouched. An input that exists only on some
-  # octopus-base feature branch therefore arrives at a workflow that does not declare it, and the
-  # whole Merge Gate ends in `startup_failure` — for every octopus-base pull request except the
-  # one that owns the branch. Pinning a tag keeps the inputs here a subset of what octopus-base
-  # `main` declares, which is the only contract a PR-time canary can hold to.
+  # THIS BRANCH ONLY. On `main` every job here pins a released octopus-base tag, because
+  # octopus-base's consumer-verify pushes a branch into this repository with every
+  # `octopusden/octopus-base/...@<ref>` rewritten to the commit under test while leaving `with:`
+  # untouched — so an input that exists only on a feature branch reaches every OTHER octopus-base
+  # pull request's canary and ends its Merge Gate in `startup_failure` (#56).
   #
-  # The three Central-publishing jobs allowlist octopus-test for the publication guard: the build
-  # declares a ~20 MB bootJava fat jar, and the guard counts it against Central. Routing it with
-  # `github-packages-publications: bootJava` is the better answer and returns with
-  # octopus-base#207 — the input does not exist on any octopus-base tag yet.
+  # A `verify/**` branch is the exception, and the reason it exists: it is never merged, so
+  # consumer-verify never builds a canary from it. Pinning the branch under test here is what lets
+  # the gate rehearse the routing input before it reaches a tag. Do not merge this branch.
+  #
+  # The three Central-publishing jobs route the fat jar instead of allowlisting it: the build
+  # declares a ~20 MB bootJava publication, and routing is what keeps the guard green without an
+  # exemption. `:bootJava` is project-qualified — the publication is in the root project.
   release-gradle-public:
     name: release/gradle-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.8.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
     with:
       flow-type: public
       java-version: "21"
       dry-run: true
-      fat-jar-publication-allowlist: octopus-test
+      github-packages-publications: ":bootJava"
     secrets: inherit
 
   release-gradle-hybrid:
     name: release/gradle-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.8.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
     with:
       flow-type: hybrid
       java-version: "21"
       commit-hash: ${{ github.sha }}
       build-version: 0.0.0-smoke-${{ github.run_number }}
       dry-run: true
-      fat-jar-publication-allowlist: octopus-test
+      github-packages-publications: ":bootJava"
     secrets: inherit
 
   release-gradle-hybrid-docker:
     name: release/gradle-hybrid-docker
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.8.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
     with:
       flow-type: hybrid
       java-version: "21"
@@ -61,7 +61,7 @@ jobs:
       build-version: 0.0.0-smoke-${{ github.run_number }}
       docker-image: octopus-test
       dry-run: true
-      fat-jar-publication-allowlist: octopus-test
+      github-packages-publications: ":bootJava"
     secrets: inherit
 
   # Consumer canary for the publish-to-nexus=false contract, i.e. deployable-only repos that
@@ -72,7 +72,7 @@ jobs:
   # No allowlist: the publication guard does not run when nothing goes to Central.
   release-gradle-hybrid-docker-no-nexus:
     name: release/gradle-hybrid-docker-no-nexus
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.8.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
     with:
       flow-type: hybrid
       java-version: "21"
@@ -84,10 +84,21 @@ jobs:
       dry-run: true
     secrets: inherit
 
-  # The github-packages-publications canary that stood here belongs with the input it covers:
-  # it can only pin an octopus-base branch, and a branch pin here breaks every other
-  # octopus-base pull request. octopus-base#207 restores it once the input is on a tag.
-  # The dispatch-only release-gradle-github-packages.yml still exercises a real publish.
+  # Consumer canary for github-packages-publications with Central off entirely. Under dry-run the
+  # publish step is skipped, so this checks only that the combination is accepted — a real publish
+  # is exercised by release-gradle-github-packages.yml.
+  release-gradle-github-packages:
+    name: release/gradle-github-packages
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
+    with:
+      flow-type: hybrid
+      java-version: "21"
+      commit-hash: ${{ github.sha }}
+      build-version: 0.0.0-smoke-${{ github.run_number }}
+      publish-to-nexus: false
+      github-packages-publications: ":bootJava"
+      dry-run: true
+    secrets: inherit
 
   release-maven-public:
     name: release/maven-public

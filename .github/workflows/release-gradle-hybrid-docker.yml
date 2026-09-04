@@ -6,7 +6,7 @@ on:
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.8.0
     with:
       flow-type: hybrid
       java-version: '21'
@@ -14,5 +14,10 @@ jobs:
       build-version: ${{ github.event.client_payload.project_version }}
       docker-image: octopus-test
       register-release-immediately: true
-      github-packages-publications: bootJava
+      # Pinned to a released tag, not the octopus-base branch that introduces
+      # github-packages-publications: this workflow performs a REAL release, and a real release
+      # must not run an unmerged contract. The allowlist keeps the publication guard satisfied
+      # meanwhile — the build declares a ~20 MB bootJava fat jar. Both give way to
+      # `github-packages-publications: ":bootJava"` once that input reaches a tag (octopus-base#207).
+      fat-jar-publication-allowlist: octopus-test
     secrets: inherit
