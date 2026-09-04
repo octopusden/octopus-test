@@ -11,9 +11,17 @@ name: Release Gradle GitHub Packages
 # skips it entirely — and it would not be needed anyway, since the guard now applies the same
 # routing and stops counting a jar bound for GitHub Packages.
 #
+# The selector is project-qualified — <project path>:<publication>, ":bootJava" for the root
+# project. A bare name is rejected. Quoted because a YAML value starting with a colon parses but
+# reads badly.
+#
 # workflow_dispatch only surfaces workflows present on the default branch, so this file must reach
 # main before it can be run. The `uses:` ref is resolved at dispatch time, which means the
 # octopus-base branch can be iterated on and re-dispatched without touching this repository again.
+#
+# This file may pin an octopus-base branch where release-smoke.yml may not: nothing triggers a
+# dispatch-only workflow, so octopus-base's consumer-verify never hands this input to a commit
+# that does not declare it. That is the failure #56 removed from the Merge Gate.
 
 on: workflow_dispatch
 
@@ -24,5 +32,5 @@ jobs:
       flow-type: public
       java-version: '21'
       publish-to-nexus: false
-      github-packages-publications: bootJava
+      github-packages-publications: ":bootJava"
     secrets: inherit
