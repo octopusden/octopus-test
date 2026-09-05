@@ -11,6 +11,7 @@ plugins {
     `java-library`
     `signing`
     `jacoco`
+
     id("io.github.gradle-nexus.publish-plugin")
     id("org.jetbrains.kotlin.jvm") version "1.9.25"
     id("org.springframework.boot") version "3.2.12"
