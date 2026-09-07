@@ -8,7 +8,7 @@ on:
 
 jobs:
   security:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-security-reports.yml@v2.5.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-security-reports.yml@b708046a3cc44d43c13e9aa65d15669b720b7d6e
     with:
       java-version: '21'
       enable-dependency-check: false
