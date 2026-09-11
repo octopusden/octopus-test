@@ -27,6 +27,12 @@ name: Release Gradle GitHub Packages
 
 on: workflow_dispatch
 
+# packages: write is what the routed publication needs; contents: write covers the tag
+# and the GitHub release.
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   release:
     uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.0.0

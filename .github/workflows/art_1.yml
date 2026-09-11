@@ -1,5 +1,8 @@
 name: Stage1 
 on: [workflow_dispatch]
+permissions:
+  contents: read
+
 jobs:
   justdoit:
     runs-on: ubuntu-latest

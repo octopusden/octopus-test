@@ -2,6 +2,9 @@ name: Test check artifact and register release
 
 on: workflow_dispatch
 
+permissions:
+  contents: read
+
 jobs:
   build:
     uses: octopusden/octopus-base/.github/workflows/common-check-and-register-release.yml@v3.0.0

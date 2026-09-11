@@ -4,6 +4,11 @@ on:
   repository_dispatch:
     types: release-docker
 
+# packages: write for the ghcr.io push this flow performs.
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   release:
     uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.0.0

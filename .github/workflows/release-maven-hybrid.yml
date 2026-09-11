@@ -4,6 +4,9 @@ on:
   repository_dispatch:
     types: release-maven
 
+permissions:
+  contents: write
+
 jobs:
   release:
     uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v3.0.0
