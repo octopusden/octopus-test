@@ -6,6 +6,10 @@ on:
     types:
       - completed
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   justcheckit:
     runs-on: ubuntu-latest
