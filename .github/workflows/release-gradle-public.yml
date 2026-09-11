@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v2.8.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.0.0
     with:
       flow-type: public
       java-version: '21'
@@ -12,6 +12,7 @@ jobs:
       # github-packages-publications: this workflow performs a REAL release, and a real release
       # must not run an unmerged contract. The allowlist keeps the publication guard satisfied
       # meanwhile — the build declares a ~20 MB bootJava fat jar. Both give way to
-      # `github-packages-publications: ":bootJava"` once that input reaches a tag (octopus-base#207).
+      # `github-packages-publications: ":bootJava"` — available from v3.0.0, so this is now a
+      # decision rather than a wait. The allowlist below is deprecated at that tag and warns.
       fat-jar-publication-allowlist: octopus-test
     secrets: inherit

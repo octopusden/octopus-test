@@ -19,15 +19,17 @@ name: Release Gradle GitHub Packages
 # main before it can be run. The `uses:` ref is resolved at dispatch time, which means the
 # octopus-base branch can be iterated on and re-dispatched without touching this repository again.
 #
-# This file may pin an octopus-base branch where release-smoke.yml may not: nothing triggers a
-# dispatch-only workflow, so octopus-base's consumer-verify never hands this input to a commit
-# that does not declare it. That is the failure #56 removed from the Merge Gate.
+# This file was allowed to pin an octopus-base branch where release-smoke.yml was not: nothing
+# triggers a dispatch-only workflow, so octopus-base's consumer-verify never hands this input to a
+# commit that does not declare it. That is the failure #56 removed from the Merge Gate. The
+# exception is no longer needed — the input ships in v3.0.0, and a tag cannot be force-pushed or
+# deleted out from under this file the way the feature branch can.
 
 on: workflow_dispatch
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@add-github-packages-publish
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.0.0
     with:
       flow-type: public
       java-version: '21'
