@@ -32,7 +32,7 @@ jobs:
   # blocked one. v3.0.0 also deprecates the allowlist, so these three jobs now warn on every run.
   release-gradle-public:
     name: release/gradle-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@32a7ddb4c6496fc527917505557511108b7bdbe9
     with:
       flow-type: public
       java-version: "21"
@@ -42,7 +42,7 @@ jobs:
 
   release-gradle-hybrid:
     name: release/gradle-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@32a7ddb4c6496fc527917505557511108b7bdbe9
     with:
       flow-type: hybrid
       java-version: "21"
@@ -54,7 +54,7 @@ jobs:
 
   release-gradle-hybrid-docker:
     name: release/gradle-hybrid-docker
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@32a7ddb4c6496fc527917505557511108b7bdbe9
     with:
       flow-type: hybrid
       java-version: "21"
@@ -73,7 +73,7 @@ jobs:
   # No allowlist: the publication guard does not run when nothing goes to Central.
   release-gradle-hybrid-docker-no-nexus:
     name: release/gradle-hybrid-docker-no-nexus
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@32a7ddb4c6496fc527917505557511108b7bdbe9
     with:
       flow-type: hybrid
       java-version: "21"
@@ -92,7 +92,7 @@ jobs:
 
   release-maven-public:
     name: release/maven-public
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@32a7ddb4c6496fc527917505557511108b7bdbe9
     with:
       flow-type: public
       java-version: "21"
@@ -101,7 +101,7 @@ jobs:
 
   release-maven-hybrid:
     name: release/maven-hybrid
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@32a7ddb4c6496fc527917505557511108b7bdbe9
     with:
       flow-type: hybrid
       java-version: "21"
