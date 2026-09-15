@@ -3,6 +3,10 @@ name: Release Gradle GitHub Packages
 # Canary for the github-packages-publications input: a real, non-dry-run release that publishes
 # the fat jar to GitHub Packages and NOTHING to Maven Central.
 #
+# This one covers the DEFAULT destination — this repository's own registry, which is what every
+# caller that leaves github-packages-repository unset gets. release-gradle-shared-packages.yml
+# covers the shared-registry destination.
+#
 # publish-to-nexus is false on purpose. Both registries refuse to re-publish an existing version,
 # so every iteration of this experiment would otherwise burn an immutable Central version and eat
 # into the org's monthly Central quota — the very quota OCTOPUS-2434 exists to protect.
