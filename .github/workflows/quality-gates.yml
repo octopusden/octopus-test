@@ -9,6 +9,6 @@ permissions:
 
 jobs:
   quality:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-quality-gates.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-quality-gates.yml@bdbbc36c6f2417eaf96d2e2f30965cd6d62297eb
     with:
       java-version: '21'
