@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    uses: octopusden/octopus-base/.github/workflows/common-check-and-register-release.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-check-and-register-release.yml@3ef2ff84910c14529457d7146caa0fa7446a9d21
     if:  "${{ github.event.workflow_run.conclusion == 'success' }}"
     with:
       artifact-pattern: "octopus-test/_VER_/octopus-test-_VER_.jar"
