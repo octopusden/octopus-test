@@ -7,7 +7,7 @@ permissions:
 
 jobs:
   build:
-    uses: octopusden/octopus-base/.github/workflows/common-check-and-register-release.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-check-and-register-release.yml@8dad627bc0be42f10cd8aba6e733665093865bcb
     with:
       artifact-pattern: "octopus-test/_VER_/octopus-test-_VER_.jar"
     secrets: inherit
