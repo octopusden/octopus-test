@@ -83,12 +83,15 @@ publishing {
         // The classifier applies to the published coordinate only — bootJar is untouched, so the
         // docker image build still consumes it.
         create<MavenPublication>("bootJava") {
-            // Deliberately not org.octopusden. Publishing these coordinates to the shared
-            // registry 422s, on a version that exists in neither registry, and GitHub appears to
-            // bind a package name to one repository per owner: org.octopusden.octopus-test is
-            // already claimed by this repository's own registry. A group nothing has ever
-            // published tests that explanation — publish means the binding is real, another 422
-            // means the cause is something else.
+            // Deliberately not org.octopusden. GitHub binds a package name to one repository per
+            // owner, and org.octopusden.octopus-test is already claimed by this repository's own
+            // registry — so the shared registry refuses it with 422, on a version that exists in
+            // neither. Changing only the group, with everything else identical, published: that
+            // is what confirms the cause is the name and not the credential or the payload.
+            //
+            // The behaviour is undocumented. GitHub's package docs say a package lives in a
+            // repository and inherits its permissions, and say nothing about names being unique
+            // across an owner, so this is pinned by observation rather than by a reference.
             //
             // Set on the publication, not on the project: `group` also feeds mavenJava, which
             // goes to Maven Central under a namespace Sonatype granted for org.octopusden.
