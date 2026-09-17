@@ -21,6 +21,7 @@ jobs:
 
   sonar:
     uses: ./.github/workflows/sonar.yml
+    secrets: inherit
 
   build-gradle-public:
     name: build/gradle-public

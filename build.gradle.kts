@@ -16,6 +16,7 @@ plugins {
     id("org.springframework.boot") version "3.2.12"
     id("io.spring.dependency-management") version "1.1.6"
     id("com.bmuschko.docker-spring-boot-application") version "9.4.0"
+    id("org.sonarqube") version "7.5.0.8588"
 }
 
 group = "org.octopusden"
