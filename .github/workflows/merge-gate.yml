@@ -19,6 +19,9 @@ jobs:
   security:
     uses: ./.github/workflows/security-reports.yml
 
+  sonar:
+    uses: ./.github/workflows/sonar.yml
+
   build-gradle-public:
     name: build/gradle-public
     uses: octopusden/octopus-base/.github/workflows/common-java-gradle-build.yml@v3.0.0
@@ -57,6 +60,7 @@ jobs:
     needs:
       - quality
       - security
+      - sonar
       - build-gradle-public
       - build-gradle-hybrid
       - build-gradle-hybrid-docker
