@@ -1,0 +1,14 @@
+name: Sonar (Maven)
+
+# Manual only: both workflows write to the same Sonar project key, so running them together
+# means the later upload overwrites the earlier one.
+on:
+  workflow_dispatch:
+
+jobs:
+  sonar:
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-sonar.yml@6e81baab6e60351922d62d55c92b0e360a9de633
+    with:
+      java-version: '8'
+      quality-gate-wait: false
+    secrets: inherit

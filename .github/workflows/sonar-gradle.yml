@@ -1,0 +1,15 @@
+name: Sonar (Gradle)
+
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  sonar:
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-sonar.yml@6e81baab6e60351922d62d55c92b0e360a9de633
+    with:
+      java-version: '21'
+      quality-gate-wait: false
+    secrets: inherit
