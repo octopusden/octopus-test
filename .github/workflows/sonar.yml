@@ -1,0 +1,22 @@
+name: Sonar
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  gradle:
+    name: sonar/gradle
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-sonar.yml@add-sonarcloud-workflows
+    with:
+      java-version: '21'
+      quality-gate-wait: false
+    secrets: inherit
+
+  maven:
+    name: sonar/maven
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-sonar.yml@add-sonarcloud-workflows
+    with:
+      java-version: '8'
+      quality-gate-wait: false
+    secrets: inherit
