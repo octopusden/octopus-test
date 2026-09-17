@@ -83,6 +83,16 @@ publishing {
         // The classifier applies to the published coordinate only — bootJar is untouched, so the
         // docker image build still consumes it.
         create<MavenPublication>("bootJava") {
+            // Deliberately not org.octopusden. Publishing these coordinates to the shared
+            // registry 422s, on a version that exists in neither registry, and GitHub appears to
+            // bind a package name to one repository per owner: org.octopusden.octopus-test is
+            // already claimed by this repository's own registry. A group nothing has ever
+            // published tests that explanation — publish means the binding is real, another 422
+            // means the cause is something else.
+            //
+            // Set on the publication, not on the project: `group` also feeds mavenJava, which
+            // goes to Maven Central under a namespace Sonatype granted for org.octopusden.
+            groupId = "org.octopusden.test"
             artifact(tasks.named("bootJar")) { classifier = "all" }
             octopusPom()
         }
