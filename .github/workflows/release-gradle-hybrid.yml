@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@e6a3edb676b6fcffedfde921ffd52eb892172be4
     with:
       flow-type: hybrid
       java-version: '21' 

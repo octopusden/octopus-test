@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    uses: octopusden/octopus-base/.github/workflows/common-register-release.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-register-release.yml@e6a3edb676b6fcffedfde921ffd52eb892172be4
     with:
       octopus-repository: ${{ inputs.octopus-repository }}
       release-version:  ${{ inputs.release-version }}

@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   security:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-security-reports.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-security-reports.yml@e6a3edb676b6fcffedfde921ffd52eb892172be4
     with:
       java-version: '21'
       enable-dependency-check: false
