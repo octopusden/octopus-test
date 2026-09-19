@@ -30,7 +30,7 @@ permissions:
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@publish-to-shared-packages-hub
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@c63e497ca2cfe85f26f50e658340b0597434900a
     with:
       flow-type: public
       java-version: '21'
