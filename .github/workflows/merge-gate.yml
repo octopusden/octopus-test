@@ -11,6 +11,8 @@ on:
 permissions:
   contents: read
   security-events: write
+  # The Sonar canary asserts against its own analysis job's log.
+  actions: read
 
 jobs:
   quality:

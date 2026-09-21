@@ -29,3 +29,17 @@ jobs:
       mvn-parameters: -f sonar-canary-maven/pom.xml
     secrets: inherit
 
+
+  verify:
+    name: sonar/verify
+    needs: maven
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assert the Maven analysis saw every source root
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash .github/scripts/assert-maven-canary-sources.sh
