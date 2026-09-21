@@ -4,6 +4,9 @@ on:
   workflow_call:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   gradle:
     name: sonar/gradle
@@ -13,10 +16,16 @@ jobs:
       quality-gate-wait: false
     secrets: inherit
 
+  # The repository root POM is packaging=pom with no modules, so it compiles nothing and the
+  # analysis had no source to index. `mvn-parameters` points both the build and the scan at a
+  # fixture that does, and reaching it through that input keeps the two invocations provably
+  # pointed at the same project.
   maven:
     name: sonar/maven
     uses: octopusden/octopus-base/.github/workflows/common-java-maven-sonar.yml@add-sonarcloud-workflows
     with:
       java-version: '8'
       quality-gate-wait: false
+      mvn-parameters: -f sonar-canary-maven/pom.xml
     secrets: inherit
+
