@@ -19,7 +19,10 @@ expected_test_kotlin=2
 log=$(mktemp)
 trap 'rm -f "$log"' EXIT
 
-mapfile -t job_ids < <(
+job_ids=()
+while IFS= read -r id; do
+  job_ids+=("$id")
+done < <(
   gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs" \
     --jq '.jobs[] | select(.name | contains("sonar/maven")) | .id'
 )
@@ -29,8 +32,15 @@ if [[ ${#job_ids[@]} -eq 0 ]]; then
   exit 1
 fi
 
+# A build log carries the scanner's ANSI colour codes, and the gh the runners ship refuses to
+# emit those unasked. Older versions have no such flag, so fall back rather than probe.
+fetch_job_log() {
+  gh api --allow-escape-sequences "repos/${GITHUB_REPOSITORY}/actions/jobs/${1}/logs" 2>/dev/null \
+    || gh api "repos/${GITHUB_REPOSITORY}/actions/jobs/${1}/logs"
+}
+
 for id in "${job_ids[@]}"; do
-  gh api "repos/${GITHUB_REPOSITORY}/actions/jobs/${id}/logs" >> "$log"
+  fetch_job_log "$id" >> "$log"
 done
 
 count_roots() {
