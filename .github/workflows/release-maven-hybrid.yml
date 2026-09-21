@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@v3.0.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-release.yml@980755a49299ec7b5fc89f554da67c31a394b8f1
     with:
       flow-type: hybrid
       java-version: '8'
