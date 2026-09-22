@@ -14,10 +14,12 @@ jobs:
     with:
       java-version: '21'
       quality-gate-wait: false
-    # EXPERIMENT: no `secrets: inherit` here, while the maven job below keeps it.
-    # The callee declares `environment: Prod` on its own job, so the token may not
-    # need passing at all. The maven job is the control - if gradle authenticates
-    # and maven does too, inheritance is redundant for every consumer.
+    # `secrets: inherit` is not optional. SONAR_TOKEN is a Prod environment secret,
+    # and the callee's own `environment: Prod` only makes it declarable - the value
+    # still has to be inherited. Dropping this line ran 16 steps with an empty
+    # SONAR_TOKEN and failed with "Not authorized"; the maven job, identical but for
+    # this line, passed in the same run. Verified on run 35799569127.
+    secrets: inherit
 
   # The repository root POM is packaging=pom with no modules, so it compiles nothing and the
   # analysis had no source to index. `mvn-parameters` points both the build and the scan at a
