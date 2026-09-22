@@ -10,11 +10,14 @@ permissions:
 jobs:
   gradle:
     name: sonar/gradle
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-sonar.yml@add-sonarcloud-workflows
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-sonar.yml@v3.1.0
     with:
       java-version: '21'
       quality-gate-wait: false
-    secrets: inherit
+    # EXPERIMENT: no `secrets: inherit` here, while the maven job below keeps it.
+    # The callee declares `environment: Prod` on its own job, so the token may not
+    # need passing at all. The maven job is the control - if gradle authenticates
+    # and maven does too, inheritance is redundant for every consumer.
 
   # The repository root POM is packaging=pom with no modules, so it compiles nothing and the
   # analysis had no source to index. `mvn-parameters` points both the build and the scan at a
@@ -22,7 +25,7 @@ jobs:
   # pointed at the same project.
   maven:
     name: sonar/maven
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-sonar.yml@add-sonarcloud-workflows
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-sonar.yml@v3.1.0
     with:
       java-version: '8'
       quality-gate-wait: false
