@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.octopusden.octopus</groupId>
+        <artifactId>octopus-test-sonar-canary</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>canary-app</artifactId>
+    <name>Sonar canary app</name>
+
+    <dependencies>
+        <!-- The reason there are two modules: the analysis is a separate mvn process that builds
+             nothing, so this sibling resolves from the local repository. `package` never puts it
+             there, and the missing jar costs every cross-module rule that needs type resolution. -->
+        <dependency>
+            <groupId>org.octopusden.octopus</groupId>
+            <artifactId>canary-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,50 @@
+name: Sonar
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gradle:
+    name: sonar/gradle
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-sonar.yml@v3.1.0
+    with:
+      java-version: '21'
+      quality-gate-wait: false
+    # `secrets: inherit` is not optional. SONAR_TOKEN is a Prod environment secret,
+    # and the callee's own `environment: Prod` only makes it declarable - the value
+    # still has to be inherited. Dropping this line ran 16 steps with an empty
+    # SONAR_TOKEN and failed with "Not authorized"; the maven job, identical but for
+    # this line, passed in the same run. Verified on run 35799569127.
+    secrets: inherit
+
+  # The repository root POM is packaging=pom with no modules, so it compiles nothing and the
+  # analysis had no source to index. `mvn-parameters` points both the build and the scan at a
+  # fixture that does, and reaching it through that input keeps the two invocations provably
+  # pointed at the same project.
+  maven:
+    name: sonar/maven
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-sonar.yml@v3.1.0
+    with:
+      java-version: '8'
+      quality-gate-wait: false
+      mvn-parameters: -f sonar-canary-maven/pom.xml
+    secrets: inherit
+
+
+  verify:
+    name: sonar/verify
+    needs: maven
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assert the Maven analysis saw every source root
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash .github/scripts/assert-maven-canary-sources.sh
