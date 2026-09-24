@@ -7,16 +7,14 @@ name: Release Gradle Shared Packages
 # two destinations are different contracts and the unset one is what every repository uses today.
 # A release computes and tags one version, so the two cannot be jobs in one file.
 #
-# Dispatch-only, and that is what lets it pin an octopus-base branch. Nothing triggers a
-# dispatch-only workflow, so octopus-base's consumer-verify never hands this input to a commit
-# that does not declare it — the failure #56 removed from the Merge Gate, and the same exception
-# release-gradle-github-packages.yml ran under until the input reached a tag. Move this pin to the
-# release tag once the input ships, for the reason recorded there: a tag cannot be force-pushed or
-# deleted out from under this file.
+# Dispatch-only, so nothing triggers it and octopus-base's consumer-verify never hands this input
+# to a commit that does not declare it — the failure #56 removed from the Merge Gate. That is what
+# let it pin an octopus-base branch while the input was unreleased; it pins a tag now, which
+# cannot be force-pushed or deleted out from under this file.
 #
-# Until the shared registry and its token exist, a dispatch fails on octopus-base's own
-# validation, by name, before anything is published. That is the intended readiness check, not a
-# defect: the registry has to be created and SHARED_PACKAGES_TOKEN distributed first.
+# v3.0.2 and not v3.0.1: the secret was renamed to OCTOPUS_SHARED_PACKAGES_TOKEN to match what
+# Vault and create_repo.py distribute, and v3.0.1 still reads the old name — so a release there
+# stops on "not set" with the secret present.
 #
 # publish-to-nexus is false for the reason the sibling canary gives: both registries refuse to
 # re-publish an existing version, so every iteration would otherwise burn an immutable Central
@@ -30,7 +28,7 @@ permissions:
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@publish-to-shared-packages-hub
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.0.2
     with:
       flow-type: public
       java-version: '21'

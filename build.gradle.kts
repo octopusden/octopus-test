@@ -84,6 +84,28 @@ publishing {
         // The classifier applies to the published coordinate only — bootJar is untouched, so the
         // docker image build still consumes it.
         create<MavenPublication>("bootJava") {
+            // Only for the shared registry. GitHub binds a package name to one repository per
+            // owner, and org.octopusden.octopus-test is already claimed by this repository's own
+            // registry — so the shared registry refuses it with 422, on a version that exists in
+            // neither. Changing only the group, with everything else identical, published: that
+            // is what confirms the cause is the name and not the credential or the payload.
+            //
+            // The binding holds in both directions: org.octopusden.test.octopus-test now belongs
+            // to octopus-maven-packages, so release-gradle-github-packages.yml, which publishes
+            // here, must keep the original group. OCTOPUS_GITHUB_PACKAGES_URL is what
+            // octopus-base sets to redirect GitHubPackages to a shared registry, and is blank or
+            // absent otherwise — a separate publication would instead reach Central in every
+            // unrouted release, a second fat jar against the quota.
+            //
+            // The behaviour is undocumented. GitHub's package docs say a package lives in a
+            // repository and inherits its permissions, and say nothing about names being unique
+            // across an owner, so this is pinned by observation rather than by a reference.
+            //
+            // Set on the publication, not on the project: `group` also feeds mavenJava, which
+            // goes to Maven Central under a namespace Sonatype granted for org.octopusden.
+            if (!System.getenv("OCTOPUS_GITHUB_PACKAGES_URL").isNullOrBlank()) {
+                groupId = "org.octopusden.test"
+            }
             artifact(tasks.named("bootJar")) { classifier = "all" }
             octopusPom()
         }
