@@ -39,27 +39,28 @@ nexusPublishing {
     }
 }
 
-fun MavenPublication.octopusPom() = pom {
-    name.set(project.name)
-    description.set("Octopus module for testing Maven release workflow")
-    url.set("https://github.com/octopusden/octopus-test.git")
-    licenses {
-        license {
-            name.set("The Apache License, Version 2.0")
-            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-        }
-    }
-    scm {
+fun MavenPublication.octopusPom() =
+    pom {
+        name.set(project.name)
+        description.set("Octopus module for testing Maven release workflow")
         url.set("https://github.com/octopusden/octopus-test.git")
-        connection.set("scm:git://github.com/octopusden/octopus-test.git")
-    }
-    developers {
-        developer {
-            id.set("octopus")
-            name.set("octopus")
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+            }
+        }
+        scm {
+            url.set("https://github.com/octopusden/octopus-test.git")
+            connection.set("scm:git://github.com/octopusden/octopus-test.git")
+        }
+        developers {
+            developer {
+                id.set("octopus")
+                name.set("octopus")
+            }
         }
     }
-}
 
 publishing {
     publications {
@@ -134,7 +135,7 @@ if (!project.version.toString().endsWith("SNAPSHOT", true)) {
         val signingPassword: String? by project
         useInMemoryPgpKeys(
             signingKey,
-            signingPassword
+            signingPassword,
         )
     }
 }
@@ -144,7 +145,11 @@ repositories {
 }
 
 val dockerRegistry = System.getenv().getOrDefault("DOCKER_REGISTRY", project.properties["docker.registry"]) as? String
-val octopusGithubDockerRegistry = System.getenv().getOrDefault("OCTOPUS_GITHUB_DOCKER_REGISTRY", project.properties["octopus.github.docker.registry"]) as? String
+val octopusGithubDockerRegistry =
+    System.getenv().getOrDefault(
+        "OCTOPUS_GITHUB_DOCKER_REGISTRY",
+        project.properties["octopus.github.docker.registry"],
+    ) as? String
 val authServerUrl = System.getenv().getOrDefault("AUTH_SERVER_URL", project.properties["auth-server.url"]) as? String
 val authServerRealm = System.getenv().getOrDefault("AUTH_SERVER_REALM", project.properties["auth-server.realm"]) as? String
 
@@ -171,7 +176,7 @@ tasks {
     jacocoTestReport {
         reports {
             xml.required.set(true)
-            xml.outputLocation.set(file("${buildDir}/reports/jacoco/report.xml"))
+            xml.outputLocation.set(file("$buildDir/reports/jacoco/report.xml"))
             html.required.set(true)
             csv.required.set(true)
         }
@@ -195,8 +200,8 @@ tasks {
                     fileTree(it) {
                         exclude("org/octopus/app/OctopusApplication*")
                     }
-                }
-            )
+                },
+            ),
         )
     }
 

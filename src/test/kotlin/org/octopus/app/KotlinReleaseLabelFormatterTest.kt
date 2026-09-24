@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class KotlinReleaseLabelFormatterTest {
-
     private val formatter = KotlinReleaseLabelFormatter()
 
     @Test
