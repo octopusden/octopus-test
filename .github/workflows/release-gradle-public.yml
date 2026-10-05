@@ -2,8 +2,11 @@ name: Release Gradle Public
 
 on: workflow_dispatch
 
+# packages: write is what the routed bootJava publication needs; contents: write covers the tag
+# and the GitHub release.
 permissions:
   contents: write
+  packages: write
 
 jobs:
   release:
@@ -11,11 +14,14 @@ jobs:
     with:
       flow-type: public
       java-version: '21'
-      # Pinned to a released tag, not the octopus-base branch that introduces
-      # github-packages-publications: this workflow performs a REAL release, and a real release
-      # must not run an unmerged contract. The allowlist keeps the publication guard satisfied
-      # meanwhile — the build declares a ~20 MB bootJava fat jar. Both give way to
-      # `github-packages-publications: ":bootJava"` — available from v3.0.0, so this is now a
-      # decision rather than a wait. The allowlist below is deprecated at that tag and warns.
-      fat-jar-publication-allowlist: octopus-test
+      # The build declares bootJava, a ~20 MB fat jar that is unsigned by design: only mavenJava is
+      # signed. Sent to Central, it breaks the publication guard's size rule, and Central refuses a
+      # file without a signature. So it goes to this repository's own GitHub Packages registry
+      # (github-packages-repository left blank, so the Actions GITHUB_TOKEN is enough), and Central
+      # receives mavenJava alone. Same destination and permissions as
+      # release-gradle-github-packages.yml, but publish-to-nexus stays on.
+      #
+      # This replaces the deprecated fat-jar-publication-allowlist. It is also what octopus-base#238's
+      # signed checksum check needs: that check refuses an unsigned file bound for Central.
+      github-packages-publications: ":bootJava"
     secrets: inherit
