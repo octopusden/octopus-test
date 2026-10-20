@@ -12,7 +12,7 @@ name: Release Gradle Shared Packages
 # let it pin an octopus-base branch while the input was unreleased; it pins a tag now, which
 # cannot be force-pushed or deleted out from under this file.
 #
-# v3.0.2 and not v3.0.1: the secret was renamed to OCTOPUS_SHARED_PACKAGES_TOKEN to match what
+# v3.0.2 or later, never v3.0.1: the secret was renamed to OCTOPUS_SHARED_PACKAGES_TOKEN to match what
 # Vault and create_repo.py distribute, and v3.0.1 still reads the old name — so a release there
 # stops on "not set" with the secret present.
 #
@@ -28,7 +28,7 @@ permissions:
 
 jobs:
   release:
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.0.2
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.4.0
     with:
       flow-type: public
       java-version: '21'
