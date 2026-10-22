@@ -85,10 +85,9 @@ jobs:
       dry-run: true
     secrets: inherit
 
-  # The github-packages-publications canary that stood here belongs with the input it covers:
-  # it can only pin an octopus-base branch, and a branch pin here breaks every other
-  # octopus-base pull request. octopus-base#207 restores it once the input is on a tag.
-  # The dispatch-only release-gradle-github-packages.yml still exercises a real publish.
+  # No github-packages-publications canary runs here. The input is on an octopus-base tag
+  # (v3.0.0 and later), so a canary could pin it; none does yet (octopus-base#207).
+  # The dispatch-only release-gradle-github-packages.yml exercises a real publish.
 
   release-maven-public:
     name: release/maven-public

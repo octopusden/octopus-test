@@ -9,7 +9,7 @@ name: Release Gradle GitHub Packages
 #
 # publish-to-nexus is false on purpose. Both registries refuse to re-publish an existing version,
 # so every iteration of this experiment would otherwise burn an immutable Central version and eat
-# into the org's monthly Central quota — the very quota OCTOPUS-2434 exists to protect.
+# into the org's monthly Central quota, which this canary exists to protect.
 #
 # No fat-jar-publication-allowlist: the guard is gated on publish-to-nexus, so turning Central off
 # skips it entirely — and it would not be needed anyway, since the guard now applies the same
@@ -19,15 +19,12 @@ name: Release Gradle GitHub Packages
 # project. A bare name is rejected. Quoted because a YAML value starting with a colon parses but
 # reads badly.
 #
-# workflow_dispatch only surfaces workflows present on the default branch, so this file must reach
-# main before it can be run. The `uses:` ref is resolved at dispatch time, which means the
-# octopus-base branch can be iterated on and re-dispatched without touching this repository again.
+# workflow_dispatch only surfaces workflows present on the default branch, so a change to this file
+# must reach main before it can be run. The `uses:` ref is an octopus-base tag, resolved at dispatch
+# time, so a run exercises exactly that tag; testing a newer octopus-base means moving the ref.
 #
-# This file was allowed to pin an octopus-base branch where release-smoke.yml was not: nothing
-# triggers a dispatch-only workflow, so octopus-base's consumer-verify never hands this input to a
-# commit that does not declare it. That is the failure #56 removed from the Merge Gate. The
-# exception is no longer needed — the input ships in v3.0.0, and a tag cannot be force-pushed or
-# deleted out from under this file the way the feature branch can.
+# The `uses:` ref pins an octopus-base tag. The input ships in v3.0.0 and later, and a tag cannot be
+# force-pushed or deleted out from under this file the way a feature branch can.
 
 on: workflow_dispatch
 
