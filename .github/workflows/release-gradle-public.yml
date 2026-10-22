@@ -21,7 +21,8 @@ jobs:
       # receives mavenJava alone. Same destination and permissions as
       # release-gradle-github-packages.yml, but publish-to-nexus stays on.
       #
-      # This replaces the deprecated fat-jar-publication-allowlist. It is also what octopus-base#238's
-      # signed checksum check needs: that check refuses an unsigned file bound for Central.
+      # This replaces the deprecated fat-jar-publication-allowlist. The Central checksum check
+      # (octopus-base#238) allows .asc files but does not require them; whether signatures are
+      # present is left to Central Portal validation.
       github-packages-publications: ":bootJava"
     secrets: inherit
