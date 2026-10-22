@@ -23,11 +23,8 @@ name: Release Gradle GitHub Packages
 # must reach main before it can be run. The `uses:` ref is an octopus-base tag, resolved at dispatch
 # time, so a run exercises exactly that tag; testing a newer octopus-base means moving the ref.
 #
-# This file was allowed to pin an octopus-base branch where release-smoke.yml was not: nothing
-# triggers a dispatch-only workflow, so octopus-base's consumer-verify never hands this input to a
-# commit that does not declare it. That is the failure #56 removed from the Merge Gate. The
-# exception is no longer needed — the input ships in v3.0.0, and a tag cannot be force-pushed or
-# deleted out from under this file the way the feature branch can.
+# The `uses:` ref pins an octopus-base tag. The input ships in v3.0.0 and later, and a tag cannot be
+# force-pushed or deleted out from under this file the way a feature branch can.
 
 on: workflow_dispatch
 
