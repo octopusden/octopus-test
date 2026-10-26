@@ -10,7 +10,7 @@ permissions:
 jobs:
   gradle:
     name: sonar/gradle
-    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-sonar.yml@v3.4.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-gradle-sonar.yml@v3.4.1
     with:
       java-version: '21'
       quality-gate-wait: false
@@ -27,7 +27,7 @@ jobs:
   # pointed at the same project.
   maven:
     name: sonar/maven
-    uses: octopusden/octopus-base/.github/workflows/common-java-maven-sonar.yml@v3.4.0
+    uses: octopusden/octopus-base/.github/workflows/common-java-maven-sonar.yml@v3.4.1
     with:
       java-version: '8'
       quality-gate-wait: false
