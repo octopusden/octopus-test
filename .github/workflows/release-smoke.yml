@@ -25,10 +25,9 @@ jobs:
   # one that owns the branch. Pinning a tag keeps the inputs here a subset of what octopus-base
   # `main` declares, which is the only contract a PR-time canary can hold to.
   #
-  # The two hybrid jobs route the bootJava fat jar with `github-packages-publications: ":bootJava"`,
-  # as their real release workflows do. release/gradle-public still allowlists octopus-test for the
-  # publication guard (deprecated in v3.0.0, so it warns on every run); its real workflow routes
-  # :bootJava too, so switching it is a follow-up.
+  # The three Central-publishing Gradle jobs route the bootJava fat jar with
+  # `github-packages-publications: ":bootJava"`, as their real release workflows do: it is unsigned
+  # by design, and Central refuses a file without a signature.
   release-gradle-public:
     name: release/gradle-public
     uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.4.1
@@ -36,7 +35,7 @@ jobs:
       flow-type: public
       java-version: "21"
       dry-run: true
-      fat-jar-publication-allowlist: octopus-test
+      github-packages-publications: ":bootJava"
     secrets: inherit
 
   release-gradle-hybrid:
@@ -84,9 +83,8 @@ jobs:
       dry-run: true
     secrets: inherit
 
-  # No github-packages-publications canary runs here. The input is on an octopus-base tag
-  # (v3.0.0 and later), so a canary could pin it; none does yet (octopus-base#207).
-  # The dispatch-only release-gradle-github-packages.yml exercises a real publish.
+  # These dry runs only check that github-packages-publications is accepted; the dispatch-only
+  # release-gradle-github-packages.yml exercises a real publish.
 
   release-maven-public:
     name: release/maven-public
