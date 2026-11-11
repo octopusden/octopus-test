@@ -25,11 +25,10 @@ jobs:
   # one that owns the branch. Pinning a tag keeps the inputs here a subset of what octopus-base
   # `main` declares, which is the only contract a PR-time canary can hold to.
   #
-  # The three Central-publishing jobs allowlist octopus-test for the publication guard: the build
-  # declares a ~20 MB bootJava fat jar, and the guard counts it against Central. Routing it with
-  # `github-packages-publications: ":bootJava"` is the better answer, and octopus-base#207 has now
-  # shipped in v3.0.0 — so the switch is possible here and is a deliberate follow-up, not a
-  # blocked one. v3.0.0 also deprecates the allowlist, so these three jobs now warn on every run.
+  # The two hybrid jobs route the bootJava fat jar with `github-packages-publications: ":bootJava"`,
+  # as their real release workflows do. release/gradle-public still allowlists octopus-test for the
+  # publication guard (deprecated in v3.0.0, so it warns on every run); its real workflow routes
+  # :bootJava too, so switching it is a follow-up.
   release-gradle-public:
     name: release/gradle-public
     uses: octopusden/octopus-base/.github/workflows/common-java-gradle-release.yml@v3.4.1
@@ -49,7 +48,7 @@ jobs:
       commit-hash: ${{ github.sha }}
       build-version: 0.0.0-smoke-${{ github.run_number }}
       dry-run: true
-      fat-jar-publication-allowlist: octopus-test
+      github-packages-publications: ":bootJava"
     secrets: inherit
 
   release-gradle-hybrid-docker:
@@ -62,7 +61,7 @@ jobs:
       build-version: 0.0.0-smoke-${{ github.run_number }}
       docker-image: octopus-test
       dry-run: true
-      fat-jar-publication-allowlist: octopus-test
+      github-packages-publications: ":bootJava"
     secrets: inherit
 
   # Consumer canary for the publish-to-nexus=false contract, i.e. deployable-only repos that

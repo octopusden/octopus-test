@@ -4,8 +4,10 @@ on:
   repository_dispatch:
     types: release
 
+# packages: write is what the routed bootJava publication needs.
 permissions:
   contents: write
+  packages: write
 
 jobs:
   release:
@@ -16,11 +18,8 @@ jobs:
       commit-hash: ${{ github.event.client_payload.commit }}
       build-version: ${{ github.event.client_payload.project_version }}
       register-release-immediately: true
-      # Pinned to a released tag, not the octopus-base branch that introduces
-      # github-packages-publications: this workflow performs a REAL release, and a real release
-      # must not run an unmerged contract. The allowlist keeps the publication guard satisfied
-      # meanwhile — the build declares a ~20 MB bootJava fat jar. Both give way to
-      # `github-packages-publications: ":bootJava"` — available from v3.0.0, so this is now a
-      # decision rather than a wait. The allowlist below is deprecated at that tag and warns.
-      fat-jar-publication-allowlist: octopus-test
+      # bootJava is a ~20 MB unsigned fat jar; Central refuses it ("Missing signature"). Route it
+      # to this repository's GitHub Packages instead, as release-gradle-public.yml does (see the
+      # comment there); Central receives mavenJava alone.
+      github-packages-publications: ":bootJava"
     secrets: inherit
