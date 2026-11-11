@@ -2,7 +2,7 @@ name: Check for artifact and register release
 
 on:
   workflow_run:
-    workflows: ["Release Gradle Hybrid"]
+    workflows: ["Release Gradle Hybrid", "Release Gradle Public"]
     types:
       - completed
 
